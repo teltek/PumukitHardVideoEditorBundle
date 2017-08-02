@@ -1,0 +1,583 @@
+/* TODO: Extract this CSS to editor plugins */
+.editorTrackItem.mainTrackTrim {
+    background-image: url(/bundles/pumukitvideoeditor/images/main_track_bkg.png);
+    background-size: 56px 100%;
+}
+
+/* END EXTRACT */
+
+/* Begin new editor */
+
+
+video {
+    background: black;
+    width: 100%;
+    height: 100%;
+    cursor:pointer;
+        position: relative
+}
+
+
+a.btn {
+    color:#f3f3f3;
+}
+
+.listItem {
+    color:#f3f3f3;
+}
+
+.editorContainer {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100%;
+}
+.paellaEditorRightBar {
+    position:fixed;
+    right:0px;
+    top:0px;
+    background-color: #4f4f4f;
+    box-shadow: 1px -4px 12px black;
+}
+
+.paellaEditorBottomBar {
+        margin-top: 10px;
+    border: 5px solid #61625d;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: #000000;
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.paellaMainContainerEditorMode {
+
+}
+
+.paellaEditorRightBarContent {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size:11px;
+}
+
+.editorTimelineContainer {
+    margin-top: -21px;
+    position:relative;
+    overflow:auto;
+        color:#c8c8c8;
+}
+
+.editorTimelineContent {
+    background-image:url(/bundles/pumukitvideoeditor/images/light_background.png);
+    position:absolute;
+    top:0px;
+    box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.7);
+    position:relative;
+}
+
+.editorTimeLineTimeMarks {
+    position:absolute;
+    top:0px;
+    height:20px;
+    left:0px;
+    right:0px;
+    z-index: 1;
+    padding-left:3px;
+    background-image: url(/bundles/pumukitvideoeditor/images/timeline_tracks_bkg.png);
+}
+
+.editorTimeLineMark {
+    float:left;
+/*	background-color: rgb(61,62,62);*/
+    font-size: 9px;
+    height: 20px;
+    line-height: 18px;
+}
+
+.editorTimeLineMark.odd {
+/*	background-color: rgb(73,82,82);*/
+}
+
+.editorTrackListItem.master {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 38px;
+    height: 51px;
+}
+
+.editorTrackListItem.secondary {
+    height: 23px;
+    position: relative;
+}
+
+.editorTrackListItem.secondary.track0 {
+    margin-top: 90px;
+}
+
+
+.editorTrackItem {
+    position: absolute;
+    height: 97%;
+    border-radius: 5px;
+    border: 1px solid rgb(111, 111, 111);
+    overflow: hidden;
+}
+
+.editorTrackItemResizer {
+    width:2px;
+    top:20%;
+    bottom:23%;
+    position: absolute;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.editorTrackItemResizer.left {
+    border-right: 8px double rgb(124, 124, 124);
+    left:0px;
+}
+
+.editorTrackItemResizer.right {
+    border-left: 8px double rgb(124, 124, 124);
+    right:0px;
+}
+
+.editorTrackItemMoveArea {
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:0px;
+    bottom:0px;
+    cursor:pointer;
+}
+
+.editorTrackItemLabel {
+    margin-left: 20px;
+    height: 100%;
+    line-height: 48px;
+    cursor:pointer;
+}
+
+.editorTrackItemLock {
+    top:5%;
+    position: absolute;
+}
+
+.editorTrackItemLabel.secondary {
+    line-height: 23px;
+}
+
+.editorTimeLineMark.last {
+    overflow: hidden;
+}
+
+.editorTimeLineTracks {
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    padding-bottom: 20px;
+    background-image: url(/bundles/pumukitvideoeditor/images/timeline_tracks_bkg.png);
+}
+
+.editorBottomToolbarContainer {
+    background-color:#52595F;
+    height:27px;
+}
+
+.zoomDropup {
+    margin-top:2px;
+    float:right;
+    margin-right:10px;
+}
+
+.navbar {
+   margin-bottom: 0px;
+}
+
+.navbar.tiny {
+    font-size:11px;
+
+}
+
+.navbar-inner.tiny {
+    min-height: 21px;
+}
+
+.navbar .nav>li {
+    line-height: 11px;
+}
+
+.navbar .nav>li>a.rightBarPlugin {
+    padding: 5px 5px 5px;
+}
+
+.editorToolbar_selectedToolUtils {
+    margin-left:10px;
+}
+
+.editorToolbarPlaybackControls {
+    left: 40%;
+        margin-top: 20px;
+}
+
+.editorTimelineCursor {
+    position:absolute;
+    height:100%;
+    width:1px;
+    border-left: 1px dashed rgba(238, 0, 12, 0.92);;
+    left: 352px;
+    z-index: 0;
+    top: 0px;
+    line-height: 54px;
+    font-size: 11px;
+    padding-left: 3px;
+}
+
+.editorTimelineCursor.currentTime {
+    border-left: 1px solid white;
+}
+
+.editorRightBarTabIcon {
+/*	display: inline-block;  to add icon, set this property and the background image in the plugin css file, using .editorRightBarTabIcon.pluginName as class name */
+    width: 15px;
+    height: 14px;
+    margin-bottom: -3px;
+    margin-right: 2px;
+}
+
+#playerContainer {
+        width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 10px;
+    border: 5px solid #61625d;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: #000000;
+        position: relative;
+}
+
+.vmarkers {
+    width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#currentTime {
+    bottom: 19px;
+    position: absolute;
+        width: 780px;
+    margin: 0px auto;
+}
+
+#cTimeText {
+        background-color: black;
+    font-weight: bold;
+    color: white;
+    font-size: 30px;
+}
+
+#visualizadores {
+    margin-top: 10px;
+}
+
+#marcadores {
+    margin-top: 10px;
+    width: 780px;
+}
+
+
+#body_div ul {
+    float: right;
+    list-style-type: none;
+    display: inline;
+    text-align: right;
+    margin-top: 10px; !important;
+    margin-bottom: 20px !important;
+}
+
+#body_div li {
+    list-style-type: none;
+    display: inline;
+    text-align: right;
+}
+
+
+div#messages {
+    width: 810px; margin: 0 auto;
+}
+form#videotrim {
+    padding: 10px;
+}
+div#container{
+    padding: 5px;
+    width: 98%;
+    margin: 2px auto;
+    overflow: hidden;
+}
+div#metaContainer{
+    width: 20%;
+    max-width:277px;
+    padding-top: 53px;
+    float:right;
+}
+div#picContainer{
+    width:20%;
+    max-width:277px;
+    padding-top: 53px;
+     float:left;
+}
+div.content{
+    margin-top:15px;
+    padding:10px;
+    background: #000000;
+    border: 5px solid #61625d;
+    border-radius: 5px;
+}
+div#playerContainer{
+    max-width:810px;
+    box-sizing: content-box;
+}
+ul#trim_buttons{
+    margin-bottom: 50px !important;
+}
+input#file-upload-button{
+    width: 370px;
+    float: left;
+    margin-top: 15px;
+}
+input.btn{
+    padding: 4px 21px 4px 21px
+}
+
+
+
+/*Force bootstrap.slate with normal bootstrap*/
+
+.force_normal_b {
+     color: #333333 !important;
+    text-shadow: none;
+    width: 94%;
+}
+legend.force_normal_b {
+    margin-bottom: 10px;
+
+}
+
+
+.ui-autocomplete-loading {
+   background: white url("/bundles/pumukitvideoeditor/images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+
+
+/*
+  MSG_ERROR MSG ALERT
+*/
+div.div_messages{
+
+  border-bottom:1px solid #EEE2BE;
+  color:#444444;
+  font-size: 18px;
+  line-height:16px;
+  margin:0 0 -3px;
+  padding: 9px 0px 4px 5%;
+  font-weight: bold;
+  opacity:0.0; filter: alpha(opacity=0); ZOOM:1;
+  width: 95%;
+  position:fixed; /*absolute*/
+  /*NEW*/
+  bottom: 30px;
+  z-index:10000;
+}
+
+div#div_messages_info{
+  background:#FFF9E9 url(/bundles/pumukitvideoeditor/images/information.png) no-repeat scroll 3% 50%;
+}
+
+div#div_messages_error{
+  background:#FFE9E9 url(/bundles/pumukitvideoeditor/images/delete.png) no-repeat scroll 3% 50%;
+}
+
+span.div_messages_span{
+    float:right;
+    cursor: pointer;
+    cursor:hand;
+    color: #EA7601;
+    text-decoration: underline;
+    padding-right: 15px;
+    font-size: 9px;
+
+}
+
+
+/**
+ * bootstrap.slate.min.css
+ */
+.paellaEditorBottomBar .navbar {
+    background-color: #000;
+}
+
+.paellaEditorBottomBar .navbar .navbar-inner {
+    background-color: #3a3f44;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#52575c),color-stop(70%,#3a3f44),to(#3a3f44));
+    background-image: -webkit-linear-gradient(#52575c,#3a3f44 70%,#3a3f44);
+    background-image: -moz-linear-gradient(top,#52575c,#3a3f44 70%,#3a3f44);
+    background-image: -o-linear-gradient(#52575c,#3a3f44 70%,#3a3f44);
+    background-image: linear-gradient(#52575c,#3a3f44 70%,#3a3f44);
+    background-repeat: no-repeat;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff52575c',endColorstr='#ff3a3f44',GradientType=0)
+}
+
+
+.paellaEditorBottomBar .btn {
+    padding: 2px 10px;
+    font-size: 11.9px;
+    text-transform: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #484d51;
+    *background-color: #3a3e41;
+    background-image: -moz-linear-gradient(top,#52575c,#3a3e41);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#52575c),to(#3a3e41));
+    background-image: -webkit-linear-gradient(top,#52575c,#3a3e41);
+    background-image: -o-linear-gradient(top,#52575c,#3a3e41);
+    background-image: linear-gradient(to bottom,#52575c,#3a3e41);
+    background-repeat: repeat-x;
+    border: 1px solid #272b30;
+    border-color: #3a3e41 #3a3e41 #161719;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff52575c',endColorstr='#ff3a3e41',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false)
+}
+
+.paellaEditorBottomBar .btn:hover,.paellaEditorBottomBar .btn:focus,.paellaEditorBottomBar .btn:active,.paellaEditorBottomBar .btn.active,.paellaEditorBottomBar .btn.disabled,.paellaEditorBottomBar .btn[disabled] {
+    color: #fff;
+    background-color: #3a3e41;
+    *background-color: #2e3134
+}
+
+.paellaEditorBottomBar .btn:active,.paellaEditorBottomBar .btn.active {
+    background-color: #222426;
+}
+
+.paellaEditorBottomBar .btn,.paellaEditorBottomBar .btn:hover {
+    font-weight: bold;
+    color: #fff  !important;
+    text-shadow: -1px -1px 1px rgba(0,0,0,0.3)
+}
+
+.paellaEditorBottomBar [class^="icon-"],.paellaEditorBottomBar [class*=" icon-"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    *margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("/bundles/pumukitvideoeditor/images/glyphicons-halflings-white.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat
+}
+
+.paellaEditorBottomBar .icon-repeat {
+    background-position: -216px -24px;
+}
+
+.paellaEditorBottomBar .icon-eye-open {
+    background-position: -96px -120px
+}
+
+.paellaEditorBottomBar .icon-backward{
+    background-position:-240px -72px
+}
+
+.paellaEditorBottomBar .icon-chevron-left{
+    background-position:-432px -72px
+}
+
+.paellaEditorBottomBar .icon-chevron-right{
+    background-position:-456px -72px
+}
+
+.paellaEditorBottomBar .icon-play {
+    background-position: -264px -72px
+}
+
+.paellaEditorBottomBar .icon-pause {
+    background-position: -288px -72px
+}
+
+.paellaEditorBottomBar .icon-stop {
+    background-position: -312px -72px
+}
+
+.paellaEditorBottomBar .icon-forward {
+    background-position: -336px -72px
+}
+
+.paellaEditorBottomBar .icon-fast-forward {
+    background-position: -360px -72px
+}
+
+.paellaEditorBottomBar .icon-fast-backward{
+    background-position:-216px -72px
+}
+
+.paellaEditorBottomBar .icon-step-forward {
+    background-position: -384px -72px
+}
+
+.paellaEditorBottomBar .icon-eject {
+    background-position: -408px -72px
+}
+
+.paellaEditorBottomBar .icon-picture {
+    background-position: -456px -48px
+}
+
+.paellaEditorBottomBar .icon-step-backward{
+    background-position:-192px -72px
+}
+
+img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+    border: 0;
+    -ms-interpolation-mode: bicubic
+}
+
+/**
+ * material overide
+ */
+
+.slider {
+  background-color: rgba(0, 0, 0, 0);
+}
+.tooltip, .tooltip.in {
+  opacity: 0;
+}
+
+.tooltip.in {
+  filter: alpha(opacity=90);
+  opacity: 0.9 !important;
+}
