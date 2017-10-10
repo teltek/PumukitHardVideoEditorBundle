@@ -17,7 +17,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require teltek/pmk2-video-editor-bundle
+$ composer require teltek/pmk2-hard-video-editor-bundle
 ```
 
 ### Step 2: Install the Bundle
@@ -25,7 +25,7 @@ $ composer require teltek/pmk2-video-editor-bundle
 Install the bundle by executing the following line command. This command updates the Kernel to enable the bundle (app/AppKernel.php) and loads the routing (app/config/routing.yml) to add the bundle routes.
 
 ```bash
-$ php app/console pumukit:install:bundle Pumukit/VideoEditorBundle/PumukitVideoEditorBundle
+$ php app/console pumukit:install:bundle Pumukit/HardVideoEditorBundle/PumukitHardVideoEditorBundle
 ```
 
 ### Step 3: Update assets
