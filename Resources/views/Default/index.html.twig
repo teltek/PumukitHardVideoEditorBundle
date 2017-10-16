@@ -5,7 +5,7 @@
 
   <div id="messages" ></div>
 
-  <form id="videotrim" autocomplete="off" method="POST" onkeypress="stopEnterSubmitting(window.event)">
+  <form id="videotrim" autocomplete="off" method="POST" action="{{ path('pumukit_videocut_action', {'id': mm.id}) }}" onkeypress="stopEnterSubmitting(window.event)">
     <input type="hidden" name="id" value="{{ mm.id }}"/>
     <div id="visualizadores"></div>
     <div id="container" >
@@ -157,7 +157,7 @@
       <button class="btn btn-pumukit btn-raised" onclick="event.preventDefault(); if(eval_cut(editor.in_ms.value, editor.out_ms.value, editor.duration)) { cut_and_continue() };">
         {% trans %}Cut and continue{% endtrans %}
       </button>
-      <button id="cut_button" class="btn btn-pumukit btn-raised" onclick="event.preventDefault(); if(eval_cut(editor.in_ms.value, editor.out_ms.value, editor.duration)) {return true} else {return false}">
+      <button id="cut_button" class="btn btn-pumukit btn-raised" onclick="event.preventDefault(); if(eval_cut(editor.in_ms.value, editor.out_ms.value, editor.duration)) {$('#videotrim').submit()} else {return false}">
         {% trans %}Cut{% endtrans %}
       </button>
     </div>
@@ -203,7 +203,7 @@ function cut_and_continue()
    var route = '{{ path('pumukit_videocut_action', {'id': mm.id}) }}'
    var parameters = $(document.forms[0]).serialize();
    $.post(route, parameters, function(data, textStatus, jqXHR){
-     debugger;
+     window.success('{% trans %}Cut done{% endtrans %}')
    });
 
 }
@@ -310,18 +310,18 @@ $('.timepicker').timepicker({
 {% endblock %}
 
 {% block javascripts %}
-  <script src="{{ asset('bundles/pumukitvideoeditor/js/prototype.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('bundles/pumukithardvideoeditor/js/prototype.js') }}" type="text/javascript"></script>
   {{ parent() }}
-  <script src="{{ asset('bundles/pumukitvideoeditor/js/popcorn-complete.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('bundles/pumukitvideoeditor/js/bootstrap-slider.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('bundles/pumukitvideoeditor/js/bootstrap-timepicker.js') }}" type="text/javascript"></script>
-  <script src="{{ asset('bundles/pumukitvideoeditor/js/videoeditor.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('bundles/pumukithardvideoeditor/js/popcorn-complete.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('bundles/pumukithardvideoeditor/js/bootstrap-slider.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('bundles/pumukithardvideoeditor/js/bootstrap-timepicker.js') }}" type="text/javascript"></script>
+  <script src="{{ asset('bundles/pumukithardvideoeditor/js/videoeditor.js') }}" type="text/javascript"></script>
 {% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukitvideoeditor/css/editor.css') }}" />
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukitvideoeditor/css/slider.css') }}" />
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukitvideoeditor/css/jquery-ui.css') }}" />
-  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukitvideoeditor/css/bootstrap-timepicker.css') }}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/editor.css') }}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/slider.css') }}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/jquery-ui.css') }}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/bootstrap-timepicker.css') }}" />
 {% endblock %}

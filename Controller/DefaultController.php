@@ -14,10 +14,13 @@ use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
 use Pumukit\EncoderBundle\Services\JobService;
 
+/**
+ * @Route("admin/hardvideoeditor")
+ */
 class DefaultController extends Controller
 {
     /**
-     * @Route("admin/videoeditor/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
+     * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "id"})
      * @Template()
      */
@@ -43,7 +46,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("admin/videoeditor/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
+     * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
      * @Method({"POST"})
      */
     public function cutAction(MultimediaObject $originalmmobject, Request $request)
@@ -115,7 +118,7 @@ class DefaultController extends Controller
 
         // Job
         $track = $originalmmobject->getTrackWithTag('master');
-        $profile = 'video_h264_trimming'; //TODO
+        $profile = $request->get('broadcastable_master') ? 'broadcastable_master_trimming' : 'master_trimming';
         $priority = 2;
         $newDuration = $out - $in;
         $parameters = array('ss' => $in, 't' => $newDuration);
@@ -127,7 +130,11 @@ class DefaultController extends Controller
 
         // If not ajax return series list
 
-        return new Response('DONE');
+        if ($request->isXmlHttpRequest()) {
+            return new Response('DONE');
+        } else {
+            return $this->redirectToRoute('pumukitnewadmin_mms_shortener', array('id' => $multimediaObject->getId()));
+        }
     }
 
     private function getRole()

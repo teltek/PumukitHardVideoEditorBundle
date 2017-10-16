@@ -25,4 +25,9 @@ class MenuService implements ItemInterface
     {
         return true;
     }
+
+    public function getIcon()
+    {
+        return 'mdi-content-content-cut';
+    }
 }

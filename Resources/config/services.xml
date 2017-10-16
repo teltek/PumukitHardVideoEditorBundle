@@ -6,7 +6,7 @@
 
 
     <services>
-      <service id="pumukit_template.menu" class="Pumukit\VideoEditorBundle\Services\MenuService">
+      <service id="pumukit_hard_video_editor.menu" class="Pumukit\HardVideoEditorBundle\Services\MenuService">
         <tag name="pumukitnewadmin.mmobjmenuitem" />
       </service>
     </services>

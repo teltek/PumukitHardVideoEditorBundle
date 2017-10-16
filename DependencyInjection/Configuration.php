@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('pumukit_video_editor');
+        $rootNode = $treeBuilder->root('pumukit_hard_video_editor');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for

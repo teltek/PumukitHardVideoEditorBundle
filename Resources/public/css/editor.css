@@ -1,6 +1,6 @@
 /* TODO: Extract this CSS to editor plugins */
 .editorTrackItem.mainTrackTrim {
-    background-image: url(/bundles/pumukitvideoeditor/images/main_track_bkg.png);
+    background-image: url(/bundles/pumukithardvideoeditor/images/main_track_bkg.png);
     background-size: 56px 100%;
 }
 
@@ -76,7 +76,7 @@ a.btn {
 }
 
 .editorTimelineContent {
-    background-image:url(/bundles/pumukitvideoeditor/images/light_background.png);
+    background-image:url(/bundles/pumukithardvideoeditor/images/light_background.png);
     position:absolute;
     top:0px;
     box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.7);
@@ -91,7 +91,7 @@ a.btn {
     right:0px;
     z-index: 1;
     padding-left:3px;
-    background-image: url(/bundles/pumukitvideoeditor/images/timeline_tracks_bkg.png);
+    background-image: url(/bundles/pumukithardvideoeditor/images/timeline_tracks_bkg.png);
 }
 
 .editorTimeLineMark {
@@ -186,7 +186,7 @@ a.btn {
     left:0px;
     right:0px;
     padding-bottom: 20px;
-    background-image: url(/bundles/pumukitvideoeditor/images/timeline_tracks_bkg.png);
+    background-image: url(/bundles/pumukithardvideoeditor/images/timeline_tracks_bkg.png);
 }
 
 .editorBottomToolbarContainer {
@@ -378,7 +378,7 @@ legend.force_normal_b {
 
 
 .ui-autocomplete-loading {
-   background: white url("/bundles/pumukitvideoeditor/images/ui-anim_basic_16x16.gif") right center no-repeat;
+   background: white url("/bundles/pumukithardvideoeditor/images/ui-anim_basic_16x16.gif") right center no-repeat;
 }
 
 
@@ -403,11 +403,11 @@ div.div_messages{
 }
 
 div#div_messages_info{
-  background:#FFF9E9 url(/bundles/pumukitvideoeditor/images/information.png) no-repeat scroll 3% 50%;
+  background:#FFF9E9 url(/bundles/pumukithardvideoeditor/images/information.png) no-repeat scroll 3% 50%;
 }
 
 div#div_messages_error{
-  background:#FFE9E9 url(/bundles/pumukitvideoeditor/images/delete.png) no-repeat scroll 3% 50%;
+  background:#FFE9E9 url(/bundles/pumukithardvideoeditor/images/delete.png) no-repeat scroll 3% 50%;
 }
 
 span.div_messages_span{
@@ -492,7 +492,7 @@ span.div_messages_span{
     *margin-right: .3em;
     line-height: 14px;
     vertical-align: text-top;
-    background-image: url("/bundles/pumukitvideoeditor/images/glyphicons-halflings-white.png");
+    background-image: url("/bundles/pumukithardvideoeditor/images/glyphicons-halflings-white.png");
     background-position: 14px 14px;
     background-repeat: no-repeat
 }

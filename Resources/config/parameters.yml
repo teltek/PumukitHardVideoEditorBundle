@@ -1,0 +1,53 @@
+pumukit_hard_video_editor:
+    profiles:
+        master_trimming:
+            display: false
+            wizard: true
+            master: true
+            format: mp4
+            codec: h264
+            mime_type: 'video/x-mp4'
+            extension: mp4
+            resolution_hor: 0
+            resolution_ver: 0
+            bitrate: 1 Mbps
+            framerate: 25
+            channels: 1
+            audio: false
+            bat: |
+                avconv -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+            streamserver:
+                name: Localmaster
+                type: store
+                host: 127.0.0.1
+                description: Local master server
+                dir_out: "%kernel.root_dir%/../web/storage/masters"
+            app: avconv
+            rel_duration_size: 1
+            rel_duration_trans: 1
+        broadcastable_master_trimming:
+            display: true
+            wizard: true
+            master: true
+            format: mp4
+            codec: h264
+            mime_type: 'video/x-mp4'
+            extension: mp4
+            resolution_hor: 0
+            resolution_ver: 0
+            bitrate: 1 Mbps
+            framerate: 25
+            channels: 1
+            audio: false
+            bat: |
+                avconv -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 22 -movflags faststart -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+            streamserver:
+                name: Localhost
+                type: download
+                host: 127.0.0.1
+                description: Local download server
+                dir_out: "%kernel.root_dir%/../web/storage/downloads"
+                url_out: "/storage/downloads"
+            app: avconv
+            rel_duration_size: 1
+            rel_duration_trans: 1

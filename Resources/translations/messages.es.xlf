@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="es" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="ce21470ab49d1d1976bc3dc72438c183" resname="Metadata">
+        <source>Metadata</source>
+        <target>Metadatos</target>
+      </trans-unit>
+      <trans-unit id="aba0ca7b07fcd994773422202f8a52b8" resname="Reset form">
+        <source>Reset form</source>
+        <target>Reiniciar formulario</target>
+      </trans-unit>
+      <trans-unit id="b78a3223503896721cca1303f776159b" resname="Title">
+        <source>Title</source>
+        <target>Título</target>
+      </trans-unit>
+      <trans-unit id="b5a7adde1af5c87d7fd797b6245c2a39" resname="Description">
+        <source>Description</source>
+        <target>Descripción</target>
+      </trans-unit>
+      <trans-unit id="8413c683b4b27cc3f4dbd4c90329d8ba" resname="Comments">
+        <source>Comments</source>
+        <target>Comentarios</target>
+      </trans-unit>
+      <trans-unit id="78386ec8f2845742c324a3d7d3e800ff" resname="People">
+        <source>People</source>
+        <target>Participante</target>
+      </trans-unit>
+      <trans-unit id="e89d72c5806eb0142da84532cf9fd287" resname="New person">
+        <source>New person</source>
+        <target>Crear nuevo</target>
+      </trans-unit>
+      <trans-unit id="667c1b8275a93e3f20ff88b55c1334d7" resname="name to search for">
+        <source>name to search for</source>
+        <target>nombre para buscar por</target>
+      </trans-unit>
+      <trans-unit id="49ee3087348e8d44e1feda1917443987" resname="Name">
+        <source>Name</source>
+        <target>Nombre</target>
+      </trans-unit>
+      <trans-unit id="03d947a2158373c3b9d74325850cb8b9" resname="Post">
+        <source>Post</source>
+        <target>Puesto</target>
+      </trans-unit>
+      <trans-unit id="de861263139358131ae7d4f271030033" resname="Firm">
+        <source>Firm</source>
+        <target>Empresa</target>
+      </trans-unit>
+      <trans-unit id="4b047c88228cfe428ba1c0da10b34c4d" resname="Generate broadcastable master">
+        <source>Generate broadcastable master</source>
+        <target>Generar master emitible</target>
+      </trans-unit>
+      <trans-unit id="b7c161bb87bb0308fb25e6f68d0a5632" resname="Thumbnail">
+        <source>Thumbnail</source>
+        <target>Miniatura</target>
+      </trans-unit>
+      <trans-unit id="697538b685f844a23ffde6524a2bbb98" resname="Delete thumbnail">
+        <source>Delete thumbnail</source>
+        <target>Borrar imagen</target>
+      </trans-unit>
+      <trans-unit id="31fde7b05ac8952dacf4af8a704074ec" resname="Preview">
+        <source>Preview</source>
+        <target>Instantánea</target>
+      </trans-unit>
+      <trans-unit id="aec967b721d5260f0f65cb2b474c5be3" resname="Upload a local file.">
+        <source>Upload a local file.</source>
+        <target>Subir fichero local.</target>
+      </trans-unit>
+      <trans-unit id="a6122a65eaa676f700ae68d393054a37" resname="Start">
+        <source>Start</source>
+        <target>Inicio</target>
+      </trans-unit>
+      <trans-unit id="87557f11575c0ad78e4e28abedc13b6e" resname="End">
+        <source>End</source>
+        <target>Fin</target>
+      </trans-unit>
+      <trans-unit id="f25eb8caf7c2861ed7a1107150e0eb16" resname="Cut and continue">
+        <source>Cut and continue</source>
+        <target>Cortar y continuar</target>
+      </trans-unit>
+      <trans-unit id="eb334dca00e390e0d3ebf52d205807d7" resname="Cut">
+        <source>Cut</source>
+        <target>Cortar</target>
+      </trans-unit>
+      <trans-unit id="aa8d8335bdd4c63f9efcf0f8189d6dcc" resname="End time should be greater than the start time">
+        <source>End time should be greater than the start time</source>
+        <target>Tiempo final tiene que se mayor que tiempo inicial</target>
+      </trans-unit>
+      <trans-unit id="75c921f925cca6252e0a05297c6b0828" resname="End time should be less than the video duration">
+        <source>End time should be less than the video duration</source>
+        <target>Tiempo final tiene que ser menor que la duracion del video</target>
+      </trans-unit>
+      <trans-unit id="c077787e13f45e547e2c6cbbb4069644" resname="Cut done">
+        <source>Cut done</source>
+        <target>Corte realizado</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
