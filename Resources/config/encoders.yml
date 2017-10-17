@@ -26,6 +26,7 @@ pumukit_hard_video_editor:
             rel_duration_size: 1
             rel_duration_trans: 1
             downloadable: false
+            target:
         broadcastable_master_trimming:
             display: true
             wizard: true
@@ -53,3 +54,4 @@ pumukit_hard_video_editor:
             rel_duration_size: 1
             rel_duration_trans: 1
             downloadable: false
+            target: 
