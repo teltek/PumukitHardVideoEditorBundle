@@ -25,6 +25,7 @@ pumukit_hard_video_editor:
             app: avconv
             rel_duration_size: 1
             rel_duration_trans: 1
+            downloadable: false
         broadcastable_master_trimming:
             display: true
             wizard: true
@@ -51,3 +52,4 @@ pumukit_hard_video_editor:
             app: avconv
             rel_duration_size: 1
             rel_duration_trans: 1
+            downloadable: false

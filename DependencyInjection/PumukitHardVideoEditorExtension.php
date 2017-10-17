@@ -26,7 +26,7 @@ class PumukitHardVideoEditorExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        $bundleConfiguration = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/parameters.yml'));
+        $bundleConfiguration = Yaml::parse(file_get_contents(__DIR__.'/../Resources/config/encoders.yml'));
         //if ($config['profiles'] && $bundleConfiguration['pumukit_hard_video_editor']['profiles']) {
             $config['profiles'] = $bundleConfiguration['pumukit_hard_video_editor']['profiles'];
         //}
