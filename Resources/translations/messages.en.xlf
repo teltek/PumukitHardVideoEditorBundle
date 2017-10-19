@@ -25,9 +25,9 @@
         <source>Comments</source>
         <target>Comments</target>
       </trans-unit>
-      <trans-unit id="78386ec8f2845742c324a3d7d3e800ff" resname="People">
-        <source>People</source>
-        <target>People</target>
+      <trans-unit id="78386ec8f2845742c324a3d7d3e800ff" resname="Participant">
+        <source>Participant</source>
+        <target>Participant</target>
       </trans-unit>
       <trans-unit id="e89d72c5806eb0142da84532cf9fd287" resname="New person">
         <source>New person</source>
