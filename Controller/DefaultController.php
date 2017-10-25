@@ -26,6 +26,7 @@ class DefaultController extends Controller
      */
     public function indexAction(MultimediaObject $multimediaObject)
     {
+        $translator = $this->get('translator');
         $role = $this->getRole();
 
         $master = $multimediaObject->getTrackWithTag('master');
@@ -34,7 +35,9 @@ class DefaultController extends Controller
             throw $this->createNotFoundException();
         }
 
-        //TODO check if multistram.
+        if ($multimediaObject->getProperty('opencast')) {
+            throw new \Exception($translator->trans("Can't cut multistream videos"));
+        }
 
         return array(
             'mm' => $multimediaObject,
@@ -52,7 +55,6 @@ class DefaultController extends Controller
     public function cutAction(MultimediaObject $originalmmobject, Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $jobService = $this->get('pumukitencoder.job');
         $factoryService = $this->get('pumukitschema.factory');
         $picService = $this->get('pumukitschema.mmspic');
         $personService = $this->get('pumukitschema.person');
