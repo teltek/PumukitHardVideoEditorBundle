@@ -66,7 +66,7 @@ class DefaultController extends Controller
         $multimediaObject = $factoryService->createMultimediaObject(
             $originalmmobject->getSeries(),
             true,
-            null // $this->getUser()
+            $this->getUser()
         );
 
         // Comment
