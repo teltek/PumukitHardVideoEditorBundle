@@ -234,7 +234,7 @@ var Videoeditor = Class.create({
 
 
         this.clear_meta.addEventListener("click", function(e){
-            if ($('#new_person').val() === "on"){
+            if ($('#new_person').is(":checked")){
                 that.newPers.hide();
                 that.divparticipante.hide();
                 that.pers.show();
@@ -409,10 +409,8 @@ var Videoeditor = Class.create({
 
 
         if(this.video.readyState == 4){
-            console.log("readyState is ", video.readyState);
             this.init_extractpic();
         }else{
-            console.log("video.addEventListener loadeddata");
             this.video.addEventListener("loadeddata", this.init_extractpic, false);
         }
 
