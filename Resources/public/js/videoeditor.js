@@ -28,7 +28,7 @@ var Videoeditor = Class.create({
         this.pers = document.getElementById("cut_person");
         this.check = document.getElementById("nuevo_participante");
         this.newPers = document.getElementById("cut_newperson");
-        this.divparticipante= document.getElementById("cut_puesto");
+        this.divparticipante= document.getElementById("cut_post");
         this.puesto = document.getElementById("cut_puesto_es");
         this.empresa = document.getElementById("cut_firm_es");
         this.caja_in = document.getElementById('in');
@@ -234,7 +234,7 @@ var Videoeditor = Class.create({
 
 
         this.clear_meta.addEventListener("click", function(e){
-            if (that.check.checked){
+            if ($('#new_person').val() === "on"){
                 that.newPers.hide();
                 that.divparticipante.hide();
                 that.pers.show();
@@ -446,7 +446,6 @@ var Videoeditor = Class.create({
     },
 
     init_extractpic: function(){
-        console.log("entra");
         that.video.width = that.canvas_draw.width = that.video.videoWidth;
         that.video.height = that.canvas_draw.height = that.video.videoHeight;
     },
