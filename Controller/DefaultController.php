@@ -39,12 +39,15 @@ class DefaultController extends Controller
             throw new \Exception($translator->trans("Can't cut multistream videos"));
         }
 
+        $profileService = $this->get('pumukitencoder.profile');
+        $broadcastable_master = $profileService->getProfile('broadcastable_master');
+
         return array(
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $role,
             'langs' => $this->container->getParameter('pumukit2.locales'),
-            'broadcastable_master' => true, //TODO
+            'broadcastable_master' => (($broadcastable_master) ? true : false),
         );
     }
 
