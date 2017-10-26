@@ -20,6 +20,9 @@ use Pumukit\EncoderBundle\Services\JobService;
 class DefaultController extends Controller
 {
     /**
+     * @param MultimediaObject $multimediaObject
+     *
+     * @return array|Response
      * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "id"})
      * @Template()
@@ -31,12 +34,35 @@ class DefaultController extends Controller
 
         $master = $multimediaObject->getTrackWithTag('master');
         $track = $multimediaObject->getTrackWithTag('html5');
+        if (!$track) {
+            $track = $multimediaObject->getTrackWithTag('display');
+        }
+        $isReadyToCut = true;
         if (!$master || !$track) {
-            throw $this->createNotFoundException();
+            $msg = $translator->trans("There aren't track master o html5 track");
+            $isReadyToCut = false;
+        }
+
+        if ($track && $multimediaObject->containsTagWithCod('PUCHYOUTUBE')) {
+            $msg = $translator->trans("Can't cut Youtube track");
+            $isReadyToCut = false;
+        }
+
+        if ($track && $track->isOnlyAudio()) {
+            $msg = $translator->trans('Upload video track to cut');
+            $isReadyToCut = false;
         }
 
         if ($multimediaObject->getProperty('opencast')) {
-            throw new \Exception($translator->trans("Can't cut multistream videos"));
+            $msg = $translator->trans("Can't cut multistream videos");
+            $isReadyToCut = false;
+        }
+
+        if (!$isReadyToCut) {
+            return $this->render(
+                'PumukitHardVideoEditorBundle:Default:error.html.twig',
+                array('multimediaObject' => $multimediaObject, 'msg' => $msg)
+            );
         }
 
         $profileService = $this->get('pumukitencoder.profile');
@@ -52,6 +78,10 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param MultimediaObject $originalmmobject
+     * @param Request          $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
      * @Method({"POST"})
      */
@@ -77,7 +107,10 @@ class DefaultController extends Controller
         // Comment
         // TODO translate
         $comments = $request->get('comm');
-        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().')'.gmdate('H:i:s', $in).' - '.gmdate('H:i:s', $out);
+        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().')'.gmdate(
+                'H:i:s',
+                $in
+            ).' - '.gmdate('H:i:s', $out);
         $multimediaObject->setComments($comments);
 
         // Add i18n
@@ -128,13 +161,22 @@ class DefaultController extends Controller
         $newDuration = $out - $in;
         $parameters = array('ss' => $in, 't' => $newDuration);
 
-        $jobService->addJob($track->getPath(), $profile, $priority, $multimediaObject, $track->getLanguage(), $track->getI18nDescription(), $parameters, $newDuration, JobService::ADD_JOB_NOT_CHECKS);
+        $jobService->addJob(
+            $track->getPath(),
+            $profile,
+            $priority,
+            $multimediaObject,
+            $track->getLanguage(),
+            $track->getI18nDescription(),
+            $parameters,
+            $newDuration,
+            JobService::ADD_JOB_NOT_CHECKS
+        );
 
         $dm->persist($multimediaObject);
         $dm->flush();
 
         // If not ajax return series list
-
         if ($request->isXmlHttpRequest()) {
             return new Response('DONE');
         } else {

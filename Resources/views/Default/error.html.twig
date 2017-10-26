@@ -1,0 +1,20 @@
+{% extends 'PumukitNewAdminBundle::layout.html.twig' %}
+
+{% block body %}
+
+    <div class="well">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {% trans %}Something was wrong{% endtrans %}
+            <p>{{ msg }}</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <p><a href="#" onclick="history.back();" class="btn btn-primary">{% trans %}Go back{% endtrans %}</a></p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
