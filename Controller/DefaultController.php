@@ -102,7 +102,7 @@ class DefaultController extends Controller
         // Comment
         // TODO translate
         $comments = $request->get('comm');
-        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().')'.gmdate(
+        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
                 'H:i:s',
                 $in
             ).' - '.gmdate('H:i:s', $out);
