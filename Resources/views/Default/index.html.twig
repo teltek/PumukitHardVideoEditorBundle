@@ -85,7 +85,7 @@
 
           {% if broadcastable_master %}
           <div class="checkbox">
-            <label style="padding-left:0px"> <input type="checkbox" id="broadcastable_master" name="broadcastable_master"> {% trans %}Generate broadcastable master{% endtrans %} </label>
+            <label style="padding-left:0px"> <input type="checkbox" id="broadcastable_master" name="broadcastable_master" checked> {% trans %}Generate broadcastable master{% endtrans %} </label>
           </div>
           {% endif %}
 
@@ -214,7 +214,6 @@ $(cut_person).autocomplete({
   source: "{{ path('pumukitnewadmin_person_auto_complete', {'mmId': mm.id, 'roleId': role.id})|raw }}",
   minLength: 3,
   select: function( event, ui ) {
-    console.log(ui.item);
     $(cut_person_id).val(ui.item.id)
   }
 }).autocomplete( "instance" )._renderItem = function( ul, item ) {
@@ -224,7 +223,6 @@ $(cut_person).autocomplete({
 };
 
 $(cut_person).on("input", function(){
-  console.log("clean autocomplete");
   $(cut_person_id).val(0);
 });
 
