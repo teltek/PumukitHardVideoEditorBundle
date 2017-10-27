@@ -2,7 +2,7 @@ pumukit_hard_video_editor:
     profiles:
         master_trimming:
             display: false
-            wizard: true
+            wizard: false
             master: true
             format: mp4
             codec: h264
@@ -29,7 +29,7 @@ pumukit_hard_video_editor:
             target:
         broadcastable_master_trimming:
             display: true
-            wizard: true
+            wizard: false
             master: true
             format: mp4
             codec: h264
