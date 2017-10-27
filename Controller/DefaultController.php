@@ -43,11 +43,6 @@ class DefaultController extends Controller
             $isReadyToCut = false;
         }
 
-        if ($track && $multimediaObject->containsTagWithCod('PUCHYOUTUBE')) {
-            $msg = $translator->trans("Can't cut Youtube track");
-            $isReadyToCut = false;
-        }
-
         if ($track && $track->isOnlyAudio()) {
             $msg = $translator->trans('Upload video track to cut');
             $isReadyToCut = false;
