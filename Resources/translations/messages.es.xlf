@@ -97,6 +97,10 @@
         <source>Cut done</source>
         <target>Corte realizado</target>
       </trans-unit>
+      <trans-unit id="1" resname="Cut multimedia object">
+        <source>Cut multimedia object</source>
+        <target>Cortar el objeto multimedia</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
