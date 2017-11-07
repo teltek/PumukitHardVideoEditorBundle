@@ -38,12 +38,12 @@ class DefaultController extends Controller
             $track = $multimediaObject->getTrackWithTag('display');
         }
         $isReadyToCut = true;
-        if (!$master || !$track) {
-            $msg = $translator->trans("There aren't track master o html5 track");
+        if (!$master && !$track) {
+            $msg = $translator->trans("There aren't track master and html5 track");
             $isReadyToCut = false;
         }
 
-        if ($track && $track->isOnlyAudio()) {
+        if ($track && ($track->isOnlyAudio() || $master->isOnlyAudio())) {
             $msg = $translator->trans('Upload video track to cut');
             $isReadyToCut = false;
         }
