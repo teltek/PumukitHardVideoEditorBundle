@@ -97,9 +97,29 @@
         <source>Cut done</source>
         <target>Corte realizado</target>
       </trans-unit>
-      <trans-unit id="1" resname="Cut multimedia object">
+      <trans-unit id="8811fbe6bfa2ad820807c0503ce72741" resname="Cut multimedia object">
         <source>Cut multimedia object</source>
         <target>Cortar el objeto multimedia</target>
+      </trans-unit>
+      <trans-unit id="55cede282658111f063c9e673053313b" resname="There aren't master track">
+        <source>There aren't master track</source>
+        <target>No existe master track</target>
+      </trans-unit>
+      <trans-unit id="ebd7a6880acb064cd2b7b439de8dcf70" resname="There aren't html5 track">
+        <source>There aren't html5 track</source>
+        <target>No existe track emitible</target>
+      </trans-unit>
+      <trans-unit id="da74240aa08b287db2941e93cfd9bdf2" resname="The master is only audio">
+        <source>The master is only audio</source>
+        <target>El master es sólo audio</target>
+      </trans-unit>
+      <trans-unit id="e9e3ba0b377e82e9ea5d7fcc8787b25f" resname="Upload video track to cut">
+        <source>Upload video track to cut</source>
+        <target>Subir un track de video para cortar</target>
+      </trans-unit>
+      <trans-unit id="2bb4fd7115285b09eff83088483b40d9" resname="Can't cut multistream videos">
+        <source>Can't cut multistream videos</source>
+        <target>No se puede cortar objetos multistream</target>
       </trans-unit>
     </body>
   </file>
