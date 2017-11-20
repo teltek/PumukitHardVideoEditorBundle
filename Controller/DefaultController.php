@@ -39,11 +39,21 @@ class DefaultController extends Controller
         }
         $isReadyToCut = true;
         if (!$master && !$track) {
-            $msg = $translator->trans("There aren't track master and html5 track");
+            $msg = $translator->trans("There aren't master track");
             $isReadyToCut = false;
         }
 
-        if ($track && ($track->isOnlyAudio() || $master->isOnlyAudio())) {
+        if (!$track) {
+            $msg = $translator->trans("There aren't html5 track");
+            $isReadyToCut = false;
+        }
+
+        if ($master->isOnlyAudio())) {
+            $msg = $translator->trans('The master is only audio');
+            $isReadyToCut = false;
+        }
+
+        if ($track->isOnlyAudio()) {
             $msg = $translator->trans('Upload video track to cut');
             $isReadyToCut = false;
         }
