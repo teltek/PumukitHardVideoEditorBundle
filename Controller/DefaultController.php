@@ -48,7 +48,7 @@ class DefaultController extends Controller
             $isReadyToCut = false;
         }
 
-        if ($master->isOnlyAudio())) {
+        if ($master->isOnlyAudio()) {
             $msg = $translator->trans('The master is only audio');
             $isReadyToCut = false;
         }
