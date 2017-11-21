@@ -29,7 +29,6 @@ class DefaultController extends Controller
      */
     public function indexAction(MultimediaObject $multimediaObject)
     {
-        $translator = $this->get('translator');
         $role = $this->getRole();
 
         $master = $multimediaObject->getTrackWithTag('master');
@@ -37,37 +36,35 @@ class DefaultController extends Controller
         if (!$track) {
             $track = $multimediaObject->getTrackWithTag('display');
         }
-        $isReadyToCut = true;
+
         if (!$master && !$track) {
-            $msg = $translator->trans("There aren't master track");
-            $isReadyToCut = false;
+            $msg = "There aren't master track";
+
+            return $this->notReadyToCut($multimediaObject, $msg);
         }
 
         if (!$track) {
-            $msg = $translator->trans("There aren't html5 track");
-            $isReadyToCut = false;
+            $msg = "There aren't html5 track";
+
+            return $this->notReadyToCut($multimediaObject, $msg);
         }
 
         if ($master->isOnlyAudio()) {
-            $msg = $translator->trans('The master is only audio');
-            $isReadyToCut = false;
+            $msg = 'The master is only audio';
+
+            return $this->notReadyToCut($multimediaObject, $msg);
         }
 
         if ($track->isOnlyAudio()) {
-            $msg = $translator->trans('Upload video track to cut');
-            $isReadyToCut = false;
+            $msg = 'Upload video track to cut';
+
+            return $this->notReadyToCut($multimediaObject, $msg);
         }
 
         if ($multimediaObject->getProperty('opencast')) {
-            $msg = $translator->trans("Can't cut multistream videos");
-            $isReadyToCut = false;
-        }
+            $msg = "Can't cut multistream videos";
 
-        if (!$isReadyToCut) {
-            return $this->render(
-                'PumukitHardVideoEditorBundle:Default:error.html.twig',
-                array('multimediaObject' => $multimediaObject, 'msg' => $msg)
-            );
+            return $this->notReadyToCut($multimediaObject, $msg);
         }
 
         $profileService = $this->get('pumukitencoder.profile');
@@ -79,6 +76,17 @@ class DefaultController extends Controller
             'role' => $role,
             'langs' => $this->container->getParameter('pumukit2.locales'),
             'broadcastable_master' => (($broadcastable_master) ? true : false),
+        );
+    }
+
+    protected function notReadyToCut($multimediaObject, $msg)
+    {
+        $translator = $this->get('translator');
+        $i18nMsg = $translator->trans($msg);
+
+        return $this->render(
+            'PumukitHardVideoEditorBundle:Default:error.html.twig',
+            array('multimediaObject' => $multimediaObject, 'msg' => $i18nMsg)
         );
     }
 
