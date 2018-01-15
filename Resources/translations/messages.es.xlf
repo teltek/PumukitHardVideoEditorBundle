@@ -121,6 +121,14 @@
         <source>Can't cut multistream videos</source>
         <target>No se puede cortar objetos multistream</target>
       </trans-unit>
+      <trans-unit id="94f786faf9ff11e78c3f9a214cf093ae" resname="Something was wrong">
+        <source>Something was wrong</source>
+        <target>Ha ocurrido un error</target>
+      </trans-unit>
+      <trans-unit id="f9c635d6f9ff11e78c3f9a214cf093ae" resname="Go back">
+        <source>Go back</source>
+        <target>Volver</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
