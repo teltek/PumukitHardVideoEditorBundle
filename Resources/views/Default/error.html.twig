@@ -3,10 +3,11 @@
 {% block body %}
 
     <div class="well">
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {% trans %}Something was wrong{% endtrans %}
-            <p>{{ msg }}</p>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-danger">{% trans %}Something was wrong{% endtrans %}: </p>
+                <p>{{ msg }}</p>
+            </div>
         </div>
 
         <div class="row">
