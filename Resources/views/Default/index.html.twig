@@ -265,6 +265,7 @@ video.addEventListener('click', function(e) {
 
 
 cancel.addEventListener('click', function(e){
+    e.preventDefault();
   if (typeof editor != 'undefined') editor.pop.pause();
    video.src = "";
    if (history.length > 1) {
