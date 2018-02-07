@@ -31,6 +31,7 @@ class PumukitHardVideoEditorExtension extends Extension
             $config['profiles'] = $bundleConfiguration['pumukit_hard_video_editor']['profiles'];
         //}
         $container->setParameter('pumukit_hard_video_editor.profilelist', $config['profiles']);
+        $container->setParameter('pumukit_hard_video_editor.default_set_role', $config['default_set_role']);
 
         $encoderBundleProfiles = $container->getParameter('pumukitencode.profilelist');
         $profilesToMerge = array();

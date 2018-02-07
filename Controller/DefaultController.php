@@ -120,17 +120,17 @@ class DefaultController extends Controller
         // Comment
         // TODO translate
         $comments = $request->get('comm');
-        $comments .= "\n---\n CORTADO DE " . $originalmmobject->getTitle() . '(' . $originalmmobject->getId() . ') ' . gmdate(
+        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
                 'H:i:s',
                 $in
-            ) . ' - ' . gmdate('H:i:s', $out);
+            ).' - '.gmdate('H:i:s', $out);
         $multimediaObject->setComments($comments);
 
         // Add i18n
         $langs = $this->container->getParameter('pumukit2.locales');
         foreach ($langs as $lang) {
-            $multimediaObject->setTitle($request->get('title_' . $lang), $lang);
-            $multimediaObject->setDescription($request->get('descript_' . $lang), $lang);
+            $multimediaObject->setTitle($request->get('title_'.$lang), $lang);
+            $multimediaObject->setDescription($request->get('descript_'.$lang), $lang);
         }
 
         // Pic
@@ -150,8 +150,8 @@ class DefaultController extends Controller
             $person = new Person();
             $person->setName($request->get('person'));
             foreach ($langs as $lang) {
-                $person->setFirm($request->get('firm_' . $lang), $lang);
-                $person->setPost($request->get('post_' . $lang), $lang);
+                $person->setFirm($request->get('firm_'.$lang), $lang);
+                $person->setPost($request->get('post_'.$lang), $lang);
             }
 
             $person = $personService->savePerson($person);
@@ -202,7 +202,9 @@ class DefaultController extends Controller
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository('PumukitSchemaBundle:Role');
 
-        $role = $repo->findOneByCod('actor');
+        $defaultRole = $this->getParameter('pumukit_hard_video_editor.default_set_role');
+
+        $role = $repo->findOneByCod($defaultRole);
 
         return $role;
     }
