@@ -218,7 +218,7 @@ $(cut_person).autocomplete({
   }
 }).autocomplete( "instance" )._renderItem = function( ul, item ) {
   return $( "<li>" )
-      .append( "<a>" + item.id + " - "+ item.label + "<br><span style='color:grey'>" + item.desc + "</span></a>" )
+      .append( "<a title=\"" + item.id + "\">" + item.label + "<br><span style='color:grey'>" + item.desc + "</span></a>" )
       .appendTo( ul );
 };
 
