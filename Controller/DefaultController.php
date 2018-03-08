@@ -117,6 +117,8 @@ class DefaultController extends Controller
             $this->getUser()
         );
 
+        $multimediaObject->setRecordDate($originalmmobject->getRecordDate());
+
         // Comment
         // TODO translate
         $comments = $request->get('comm');
