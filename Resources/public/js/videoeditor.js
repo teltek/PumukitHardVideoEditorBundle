@@ -207,8 +207,8 @@ var Videoeditor = Class.create({
 
         this.pic.addEventListener("click", function(e){
             that.ctx_draw.drawImage(that.video, 0, 0, that.video.width, that.video.height);
-            that.img.src = that.canvas_draw.toDataURL("image/png");
-            that.img_input.value = that.canvas_draw.toDataURL("image/png");
+            that.img.src = that.canvas_draw.toDataURL("image/jpeg");
+            that.img_input.value = that.canvas_draw.toDataURL("image/jpeg");
             that.clear_pic.show();
         }, false);
 
