@@ -61,7 +61,7 @@ class DefaultController extends Controller
             return $this->notReadyToCut($multimediaObject, $msg);
         }
 
-        if ($multimediaObject->getProperty('opencast')) {
+        if ($multimediaObject->isMultistream()) {
             $msg = "Can't cut multistream videos";
 
             return $this->notReadyToCut($multimediaObject, $msg);
