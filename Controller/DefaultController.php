@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
-use Pumukit\SchemaBundle\Document\Role;
 use Pumukit\EncoderBundle\Services\JobService;
 
 /**
@@ -79,6 +78,12 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @param $multimediaObject
+     * @param $msg
+     *
+     * @return Response
+     */
     protected function notReadyToCut($multimediaObject, $msg)
     {
         $translator = $this->get('translator');
@@ -93,6 +98,10 @@ class DefaultController extends Controller
     /**
      * @param MultimediaObject $originalmmobject
      * @param Request          $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
@@ -199,6 +208,9 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @return mixed
+     */
     private function getRole()
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
