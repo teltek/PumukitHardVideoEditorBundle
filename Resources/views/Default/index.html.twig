@@ -112,7 +112,7 @@
       <div id="playerContainer" >
         <video id="video"
                crossorigin="anonymous"
-               src="{{ asset(track_url(track), absolute=true) }}"
+               src="{{ asset(direct_track_url(track, app.request), absolute=true) }}"
                {% if(track.isOnlyAudio()) %} poster="{{ mm|first_url_pic(false, false) }}" style="background-color: white"{% endif %}
                onloadedmetadata ="editor = new Videoeditor(this, document.getElementById('navbar-inner'), document.getElementById('visualizadores'), document.getElementById('marcadores'));" >
         </video>
