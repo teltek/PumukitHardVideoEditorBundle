@@ -69,12 +69,16 @@ class DefaultController extends Controller
         $profileService = $this->get('pumukitencoder.profile');
         $broadcastable_master = $profileService->getProfile('broadcastable_master');
 
+        // Check if direct_track_url filter exists. Delete in 1.1.0
+        $direct_track_url_exists = method_exists($this->get('pumukit_baseplayer.trackurl'), 'generateDirectTrackFileUrl');
+
         return array(
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $role,
             'langs' => $this->container->getParameter('pumukit2.locales'),
             'broadcastable_master' => (($broadcastable_master) ? true : false),
+            'direct_track_url_exists' => $direct_track_url_exists,
         );
     }
 
