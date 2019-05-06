@@ -1,6 +1,6 @@
 # Video Editor Bundle
 
-Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT2 Video Platform](https://github.com/campusdomar/PuMuKIT2/blob/2.3.x/README.md).
+Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT Video Platform](https://github.com/campusdomar/PuMuKIT2/blob/2.3.x/README.md).
 
 This bundle provides a basic mono-stream video editor. Useful to create new multimedia objects from hard trimming operations.
 

@@ -76,7 +76,7 @@ class DefaultController extends Controller
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $role,
-            'langs' => $this->container->getParameter('pumukit2.locales'),
+            'langs' => $this->container->getParameter('pumukit.locales'),
             'broadcastable_master' => (($broadcastable_master) ? true : false),
             'direct_track_url_exists' => $direct_track_url_exists,
         );
@@ -142,7 +142,7 @@ class DefaultController extends Controller
         $multimediaObject->setComments($comments);
 
         // Add i18n
-        $langs = $this->container->getParameter('pumukit2.locales');
+        $langs = $this->container->getParameter('pumukit.locales');
         foreach ($langs as $lang) {
             $multimediaObject->setTitle($request->get('title_'.$lang), $lang);
             $multimediaObject->setDescription($request->get('descript_'.$lang), $lang);
