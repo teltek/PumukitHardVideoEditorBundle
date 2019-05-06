@@ -17,7 +17,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require teltek/pmk2-hard-video-editor-bundle
+$ composer require teltek/pumukit-hard-video-editor-bundle
 ```
 
 ### Step 2: Install the Bundle
