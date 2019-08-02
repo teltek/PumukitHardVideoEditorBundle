@@ -36,7 +36,7 @@ class DefaultController extends Controller
             $track = $multimediaObject->getTrackWithTag('display');
         }
 
-        if (!$master && !$track) {
+        if (!$master) {
             $msg = "There aren't master track";
 
             return $this->notReadyToCut($multimediaObject, $msg);
