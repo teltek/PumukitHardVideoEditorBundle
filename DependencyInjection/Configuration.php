@@ -25,11 +25,12 @@ class Configuration implements ConfigurationInterface
         // more information on that topic.
         $rootNode
             ->children()
-                ->scalarNode('default_set_role')
-                    ->defaultValue('Participant')
-                    ->info('Get the default role to add person on hard trimming')
-                ->end()
-            ->end();
+            ->scalarNode('default_set_role')
+            ->defaultValue('Participant')
+            ->info('Get the default role to add person on hard trimming')
+            ->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }

@@ -2,10 +2,10 @@
 
 namespace Pumukit\HardVideoEditorBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -34,7 +34,7 @@ class PumukitHardVideoEditorExtension extends Extension
         $container->setParameter('pumukit_hard_video_editor.default_set_role', $config['default_set_role']);
 
         $encoderBundleProfiles = $container->getParameter('pumukitencode.profilelist');
-        $profilesToMerge = array();
+        $profilesToMerge = [];
         foreach ($config['profiles'] as $name => $profile) {
             if (!isset($encoderBundleProfiles[$name])) {
                 $profilesToMerge[$name] = $profile;

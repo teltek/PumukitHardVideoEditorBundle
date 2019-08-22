@@ -2,16 +2,16 @@
 
 namespace Pumukit\HardVideoEditorBundle\Controller;
 
+use Pumukit\EncoderBundle\Services\JobService;
+use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Pumukit\SchemaBundle\Document\Person;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Pumukit\SchemaBundle\Document\MultimediaObject;
-use Pumukit\SchemaBundle\Document\Person;
-use Pumukit\EncoderBundle\Services\JobService;
 
 /**
  * @Route("admin/hardvideoeditor")
@@ -72,42 +72,24 @@ class DefaultController extends Controller
         // Check if direct_track_url filter exists. Delete in 1.1.0
         $direct_track_url_exists = method_exists($this->get('pumukit_baseplayer.trackurl'), 'generateDirectTrackFileUrl');
 
-        return array(
+        return [
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $role,
             'langs' => $this->container->getParameter('pumukit.locales'),
             'broadcastable_master' => (($broadcastable_master) ? true : false),
             'direct_track_url_exists' => $direct_track_url_exists,
-        );
-    }
-
-    /**
-     * @param $multimediaObject
-     * @param $msg
-     *
-     * @return Response
-     */
-    protected function notReadyToCut($multimediaObject, $msg)
-    {
-        $translator = $this->get('translator');
-        $i18nMsg = $translator->trans($msg);
-
-        return $this->render(
-            'PumukitHardVideoEditorBundle:Default:error.html.twig',
-            array('multimediaObject' => $multimediaObject, 'msg' => $i18nMsg)
-        );
+        ];
     }
 
     /**
      * @param MultimediaObject $originalmmobject
      * @param Request          $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     *
      * @throws \Exception
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
      * @Method({"POST"})
      */
@@ -120,8 +102,8 @@ class DefaultController extends Controller
         $jobService = $this->get('pumukitencoder.job');
 
         // data
-        $in = floatval($request->get('in_ms'));
-        $out = floatval($request->get('out_ms'));
+        $in = (float) ($request->get('in_ms'));
+        $out = (float) ($request->get('out_ms'));
 
         // object
         $multimediaObject = $factoryService->createMultimediaObject(
@@ -136,8 +118,8 @@ class DefaultController extends Controller
         // TODO translate
         $comments = $request->get('comm');
         $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
-                'H:i:s',
-                $in
+            'H:i:s',
+            $in
             ).' - '.gmdate('H:i:s', $out);
         $multimediaObject->setComments($comments);
 
@@ -187,7 +169,7 @@ class DefaultController extends Controller
         $profile = $request->get('broadcastable_master') ? 'broadcastable_master_trimming' : 'master_trimming';
         $priority = 2;
         $newDuration = $out - $in;
-        $parameters = array('ss' => $in, 't' => $newDuration);
+        $parameters = ['ss' => $in, 't' => $newDuration];
 
         $jobService->addJob(
             $track->getPath(),
@@ -207,9 +189,26 @@ class DefaultController extends Controller
         // If not ajax return series list
         if ($request->isXmlHttpRequest()) {
             return new Response('DONE');
-        } else {
-            return $this->redirectToRoute('pumukitnewadmin_mms_shortener', array('id' => $multimediaObject->getId()));
         }
+
+        return $this->redirectToRoute('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()]);
+    }
+
+    /**
+     * @param $multimediaObject
+     * @param $msg
+     *
+     * @return Response
+     */
+    protected function notReadyToCut($multimediaObject, $msg)
+    {
+        $translator = $this->get('translator');
+        $i18nMsg = $translator->trans($msg);
+
+        return $this->render(
+            'PumukitHardVideoEditorBundle:Default:error.html.twig',
+            ['multimediaObject' => $multimediaObject, 'msg' => $i18nMsg]
+        );
     }
 
     /**
@@ -222,8 +221,6 @@ class DefaultController extends Controller
 
         $defaultRole = $this->getParameter('pumukit_hard_video_editor.default_set_role');
 
-        $role = $repo->findOneByCod($defaultRole);
-
-        return $role;
+        return $repo->findOneByCod($defaultRole);
     }
 }
