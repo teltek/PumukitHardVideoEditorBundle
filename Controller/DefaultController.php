@@ -120,7 +120,7 @@ class DefaultController extends Controller
         $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
             'H:i:s',
             $in
-            ).' - '.gmdate('H:i:s', $out);
+        ).' - '.gmdate('H:i:s', $out);
         $multimediaObject->setComments($comments);
 
         // Add i18n
