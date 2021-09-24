@@ -1,10 +1,8 @@
-{% extends 'PumukitNewAdminBundle::layout.html.twig' %}
+{% extends '@PumukitNewAdmin/layout.html.twig' %}
 
 {% block body %}
     <div>
-
         <div id="messages"></div>
-
         <form id="videotrim" autocomplete="off" method="POST" action="{{ path('pumukit_videocut_action', {'id': mm.id}) }}" onkeypress="stopEnterSubmitting(window.event)">
             <input type="hidden" name="id" value="{{ mm.id }}"/>
             <div id="visualizadores"></div>

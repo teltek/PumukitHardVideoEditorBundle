@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire:      true
+    autoconfigure: true
+    public:        true
+    bind:
+      $pumukitLocales: '%pumukit.locales%'
+      $defaultSetRole: '%pumukit_hard_video_editor.default_set_role%'
+
+  Pumukit\HardVideoEditorBundle\Controller\:
+    resource: '../../Controller/'
+    tags: ['controller.service_arguments']
+
+  Pumukit\HardVideoEditorBundle\Services\MenuService:
+    class: Pumukit\HardVideoEditorBundle\Services\MenuService
+    tags:
+      - { name: "pumukitnewadmin.mmobjmenuitem" }

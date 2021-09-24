@@ -1,27 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\HardVideoEditorBundle\Controller;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\EncoderBundle\Services\JobService;
+use Pumukit\EncoderBundle\Services\ProfileService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
+use Pumukit\SchemaBundle\Document\Role;
+use Pumukit\SchemaBundle\Services\FactoryService;
+use Pumukit\SchemaBundle\Services\MultimediaObjectPicService;
+use Pumukit\SchemaBundle\Services\PersonService;
+use Pumukit\SchemaBundle\Services\PicService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("admin/hardvideoeditor")
  */
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
+    private $documentManager;
+    private $profileService;
+    private $trackUrlService;
+    private $factoryService;
+    private $multimediaObjectPicService;
+    private $personService;
+    private $jobService;
+    private $translator;
+    private $pumukitLocales;
+    private $defaultSetRole;
+
+    public function __construct(
+        DocumentManager $documentManager,
+        ProfileService $profileService,
+        TrackUrlService $trackUrlService,
+        FactoryService $factoryService,
+        MultimediaObjectPicService $multimediaObjectPicService,
+        PersonService $personService,
+        JobService $jobService,
+        TranslatorInterface $translator,
+        array $pumukitLocales,
+        string $defaultSetRole
+    ) {
+        $this->documentManager = $documentManager;
+        $this->profileService = $profileService;
+        $this->trackUrlService = $trackUrlService;
+        $this->factoryService = $factoryService;
+        $this->multimediaObjectPicService = $multimediaObjectPicService;
+        $this->personService = $personService;
+        $this->jobService = $jobService;
+        $this->translator = $translator;
+        $this->pumukitLocales = $pumukitLocales;
+        $this->defaultSetRole = $defaultSetRole;
+    }
+
     /**
-     * @param MultimediaObject $multimediaObject
-     *
-     * @return array|Response
      * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "id"})
      * @Template()
@@ -66,47 +109,29 @@ class DefaultController extends Controller
             return $this->notReadyToCut($multimediaObject, $msg);
         }
 
-        $profileService = $this->get('pumukitencoder.profile');
-        $broadcastable_master = $profileService->getProfile('broadcastable_master');
-
-        // Check if direct_track_url filter exists. Delete in 1.1.0
-        $direct_track_url_exists = method_exists($this->get('pumukit_baseplayer.trackurl'), 'generateDirectTrackFileUrl');
+        $broadcastable_master = $this->profileService->getProfile('broadcastable_master');
+        $direct_track_url_exists = method_exists($this->trackUrlService, 'generateDirectTrackFileUrl');
 
         return [
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $role,
-            'langs' => $this->container->getParameter('pumukit.locales'),
+            'langs' => $this->pumukitLocales,
             'broadcastable_master' => (($broadcastable_master) ? true : false),
             'direct_track_url_exists' => $direct_track_url_exists,
         ];
     }
 
     /**
-     * @param MultimediaObject $originalmmobject
-     * @param Request          $request
-     *
-     * @throws \Exception
-     *
-     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
      * @Method({"POST"})
      */
-    public function cutAction(MultimediaObject $originalmmobject, Request $request)
+    public function cutAction(Request $request, MultimediaObject $originalmmobject)
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
-        $factoryService = $this->get('pumukitschema.factory');
-        $picService = $this->get('pumukitschema.mmspic');
-        $personService = $this->get('pumukitschema.person');
-        $jobService = $this->get('pumukitencoder.job');
-
-        // data
         $in = (float) ($request->get('in_ms'));
         $out = (float) ($request->get('out_ms'));
 
-        // object
-        $multimediaObject = $factoryService->createMultimediaObject(
+        $multimediaObject = $this->factoryService->createMultimediaObject(
             $originalmmobject->getSeries(),
             true,
             $this->getUser()
@@ -114,8 +139,6 @@ class DefaultController extends Controller
 
         $multimediaObject->setRecordDate($originalmmobject->getRecordDate());
 
-        // Comment
-        // TODO translate
         $comments = $request->get('comm');
         $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
             'H:i:s',
@@ -123,14 +146,11 @@ class DefaultController extends Controller
         ).' - '.gmdate('H:i:s', $out);
         $multimediaObject->setComments($comments);
 
-        // Add i18n
-        $langs = $this->container->getParameter('pumukit.locales');
-        foreach ($langs as $lang) {
+        foreach ($this->pumukitLocales as $lang) {
             $multimediaObject->setTitle($request->get('title_'.$lang), $lang);
             $multimediaObject->setDescription($request->get('descript_'.$lang), $lang);
         }
 
-        // Pic
         $base_64 = $request->request->get('hidden_src_img');
         if ($base_64) {
             $decodedData = substr($base_64, 22, strlen($base_64));
@@ -138,40 +158,35 @@ class DefaultController extends Controller
 
             $data = base64_decode($decodedData);
 
-            $picService->addPicMem($multimediaObject, $data, $format);
+            $this->multimediaObjectPicService->addPicMem($multimediaObject, $data, $format);
         }
 
-        // Person
         $person = false;
         if ('on' == $request->get('new_person') && strlen($request->get('person')) > 0) {
             $person = new Person();
             $person->setName($request->get('person'));
-            foreach ($langs as $lang) {
+            foreach ($this->pumukitLocales as $lang) {
                 $person->setFirm($request->get('firm_'.$lang), $lang);
                 $person->setPost($request->get('post_'.$lang), $lang);
             }
 
-            $person = $personService->savePerson($person);
+            $person = $this->personService->savePerson($person);
         } elseif ('0' !== $request->get('person_id', '0')) {
-            $person = $personService->findPersonById($request->get('person_id'));
+            $person = $this->personService->findPersonById($request->get('person_id'));
         }
 
         if ($person) {
             $role = $this->getRole();
-            $multimediaObject = $personService->createRelationPerson($person, $role, $multimediaObject);
+            $multimediaObject = $this->personService->createRelationPerson($person, $role, $multimediaObject);
         }
 
-        // PubChannel
-        // TODO
-
-        // Job
         $track = $originalmmobject->getTrackWithTag('master');
         $profile = $request->get('broadcastable_master') ? 'broadcastable_master_trimming' : 'master_trimming';
         $priority = 2;
         $newDuration = $out - $in;
         $parameters = ['ss' => $in, 't' => $newDuration];
 
-        $jobService->addJob(
+        $this->jobService->addJob(
             $track->getPath(),
             $profile,
             $priority,
@@ -183,10 +198,9 @@ class DefaultController extends Controller
             JobService::ADD_JOB_NOT_CHECKS
         );
 
-        $dm->persist($multimediaObject);
-        $dm->flush();
+        $this->documentManager->persist($multimediaObject);
+        $this->documentManager->flush();
 
-        // If not ajax return series list
         if ($request->isXmlHttpRequest()) {
             return new Response('DONE');
         }
@@ -194,16 +208,9 @@ class DefaultController extends Controller
         return $this->redirectToRoute('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()]);
     }
 
-    /**
-     * @param $multimediaObject
-     * @param $msg
-     *
-     * @return Response
-     */
-    protected function notReadyToCut($multimediaObject, $msg)
+    protected function notReadyToCut(MultimediaObject $multimediaObject, ?string $msg = '')
     {
-        $translator = $this->get('translator');
-        $i18nMsg = $translator->trans($msg);
+        $i18nMsg = $this->translator->trans($msg);
 
         return $this->render(
             'PumukitHardVideoEditorBundle:Default:error.html.twig',
@@ -211,16 +218,8 @@ class DefaultController extends Controller
         );
     }
 
-    /**
-     * @return mixed
-     */
     private function getRole()
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
-        $repo = $dm->getRepository('PumukitSchemaBundle:Role');
-
-        $defaultRole = $this->getParameter('pumukit_hard_video_editor.default_set_role');
-
-        return $repo->findOneByCod($defaultRole);
+        return $this->documentManager->getRepository(Role::class)->findOneBy(['cod' => $this->defaultSetRole]);
     }
 }
