@@ -67,7 +67,6 @@ class DefaultController extends AbstractController
     /**
      * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "id"})
-     * @Template()
      */
     public function indexAction(MultimediaObject $multimediaObject)
     {
@@ -112,24 +111,26 @@ class DefaultController extends AbstractController
         $broadcastable_master = $this->profileService->getProfile('broadcastable_master');
         $direct_track_url_exists = method_exists($this->trackUrlService, 'generateDirectTrackFileUrl');
 
-        return [
-            'mm' => $multimediaObject,
-            'track' => $track,
-            'role' => $role,
-            'langs' => $this->pumukitLocales,
-            'broadcastable_master' => (($broadcastable_master) ? true : false),
-            'direct_track_url_exists' => $direct_track_url_exists,
-        ];
+        return $this->render(
+            '@PumukitHardVideoEditor/Default/index.html.twig',
+            [
+                'mm' => $multimediaObject,
+                'track' => $track,
+                'role' => $role,
+                'langs' => $this->pumukitLocales,
+                'broadcastable_master' => (($broadcastable_master) ? true : false),
+                'direct_track_url_exists' => $direct_track_url_exists,
+            ]
+        );
     }
 
     /**
-     * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"})
-     * @Method({"POST"})
+     * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"}, methods={"POST"})
      */
     public function cutAction(Request $request, MultimediaObject $originalmmobject)
     {
-        $in = (float) ($request->get('in_ms'));
-        $out = (float) ($request->get('out_ms'));
+        $in = (int) ($request->get('in_ms'));
+        $out = (int) ($request->get('out_ms'));
 
         $multimediaObject = $this->factoryService->createMultimediaObject(
             $originalmmobject->getSeries(),
@@ -213,7 +214,7 @@ class DefaultController extends AbstractController
         $i18nMsg = $this->translator->trans($msg);
 
         return $this->render(
-            'PumukitHardVideoEditorBundle:Default:error.html.twig',
+            '@PumukitHardVideoEditor/Default/error.html.twig',
             ['multimediaObject' => $multimediaObject, 'msg' => $i18nMsg]
         );
     }
