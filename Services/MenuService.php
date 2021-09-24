@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\HardVideoEditorBundle\Services;
 
 use Pumukit\NewAdminBundle\Menu\ItemInterface;
@@ -29,5 +31,10 @@ class MenuService implements ItemInterface
     public function getIcon(): string
     {
         return 'mdi-content-content-cut';
+    }
+
+    public function getServiceTag(): string
+    {
+        return 'mmobjmenu';
     }
 }
