@@ -3,8 +3,7 @@ PumukitHardVideoEditorBundle configuration
 
 ### Configure your default role
 
-After install the bundle you can configure the role that you want use when uses hard trimming. To change it you should add to your parameters.yml these
-configuration:
+After install the bundle you can configure the role that you want use when uses hard trimming. To change it you should add to your parameters.yml this configuration:
 
 ```
 pumukit_hard_video_editor:
