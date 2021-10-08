@@ -10,7 +10,7 @@ composer require teltek/pumukit-hard-video-editor-bundle
 if not, add this to config/bundles.php
 
 ```
-Pumukit\HardVideoEditor\PumukitHardVideoEditorBundle::class => ['all' => true]
+Pumukit\HardVideoEditorBundle\PumukitHardVideoEditorBundle::class => ['all' => true]
 ```
 
 Then execute the following commands
