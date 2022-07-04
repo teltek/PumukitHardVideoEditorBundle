@@ -63,7 +63,7 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
-     * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "id"})
+     * @ParamConverter("multimediaObject", options={"id" = "id"})
      */
     public function indexAction(MultimediaObject $multimediaObject)
     {
