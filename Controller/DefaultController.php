@@ -63,9 +63,10 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
+     *
      * @ParamConverter("multimediaObject", options={"id" = "id"})
      */
-    public function indexAction(MultimediaObject $multimediaObject)
+    public function indexAction(MultimediaObject $multimediaObject): Response
     {
         $role = $this->getRole();
 
@@ -126,8 +127,8 @@ class DefaultController extends AbstractController
      */
     public function cutAction(Request $request, MultimediaObject $originalmmobject)
     {
-        $in = (int) ($request->get('in_ms'));
-        $out = (int) ($request->get('out_ms'));
+        $in = (int) $request->get('in_ms');
+        $out = (int) $request->get('out_ms');
 
         $multimediaObject = $this->factoryService->createMultimediaObject(
             $originalmmobject->getSeries(),

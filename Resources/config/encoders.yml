@@ -21,7 +21,7 @@ pumukit_hard_video_editor:
                 type: store
                 host: 127.0.0.1
                 description: Local master server
-                dir_out: "%kernel.root_dir%/../public/storage/masters"
+                dir_out: "%kernel.project_dir%/public/storage/masters"
             app: avconv
             rel_duration_size: 1
             rel_duration_trans: 1
@@ -48,7 +48,7 @@ pumukit_hard_video_editor:
                 type: download
                 host: 127.0.0.1
                 description: Local download server
-                dir_out: "%kernel.root_dir%/../public/storage/downloads"
+                dir_out: "%kernel.project_dir%/public/storage/downloads"
                 url_out: "/storage/downloads"
             app: avconv
             rel_duration_size: 1

@@ -85,7 +85,7 @@
 
                         {% if broadcastable_master %}
                             <div class="checkbox">
-                                <label style="padding-left:0px">
+                                <label style="padding-left:0">
                                     <input type="checkbox" id="broadcastable_master" name="broadcastable_master" checked> {% trans %}Generate broadcastable master{% endtrans %}
                                 </label>
                             </div>
@@ -140,16 +140,16 @@
             <!-- viewers  markers -->
             <div class="vmarkers" style="overflow:hidden; padding-top: 10px;">
                 <div class="col-xs-6 form-group">
-                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0px">{% trans %}Start{% endtrans %}
+                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0">{% trans %}Start{% endtrans %}
                         :</label>
-                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0px">
+                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0">
                         <input id="timepicker_left" type="text" class="input-small timepicker">
                     </div>
                 </div>
                 <div class="col-xs-6 form-group">
-                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0px">{% trans %}End{% endtrans %}
+                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0">{% trans %}End{% endtrans %}
                         :</label>
-                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0px">
+                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0">
                         <input id="timepicker_right" type="text" class="input-small timepicker">
                     </div>
                 </div>
@@ -169,20 +169,14 @@
                     {% trans %}Cut{% endtrans %}
                 </button>
             </div>
-
-
         </form>
-
     </div>
 
     <script type="text/javascript">
-
-
         function eval_cut(inicio, fin, duration) {
             inicio = parseFloat(inicio);
             fin = parseFloat(fin);
             alerta = document.getElementById("messages");
-
 
             if ((isNaN(inicio)) || (isNaN(fin))) {
                 return false;
@@ -243,11 +237,7 @@
                 $(cut_person).show();
             }
         }
-
     </script>
-
-
-
     <script type="text/javascript">
         var video = document.querySelector('#video');
         var cancel = document.querySelector('#cancel_button');
@@ -255,7 +245,6 @@
         video.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         }, false);
-
 
         video.addEventListener('click', function (e) {
             (editor.pop.paused()) ? editor.pop.play() : editor.pop.pause();
@@ -268,7 +257,6 @@
             }
         });
 
-
         cancel.addEventListener('click', function (e) {
             e.preventDefault();
             if (typeof editor != 'undefined') editor.pop.pause();
@@ -280,7 +268,6 @@
                 window.close();
             }
         });
-
 
         function stopEnterSubmitting(e) {
             if (e.keyCode == 13) {
@@ -295,7 +282,6 @@
             }
         }
 
-
         $('.timepicker').timepicker({
             template: false,
             showInputs: false,
@@ -307,8 +293,6 @@
             showMiliSeconds: true,
             defaultTime: false
         });
-
-
     </script>
 
 {% endblock %}
