@@ -119,7 +119,7 @@
                     <video id="video"
                            crossorigin="anonymous"
                            src="{{ direct_track_url_exists ? direct_track_url(track, app.request) : asset(track_url(track)) }}"
-                            {% if(track.isOnlyAudio()) %} poster="{{ mm|first_url_pic(false, false) }}" style="background-color: white"{% endif %}
+                            {% if(track.metadata().isOnlyAudio()) %} poster="{{ mm|first_url_pic(false, false) }}" style="background-color: white"{% endif %}
                            onloadedmetadata="editor = new Videoeditor(this, document.getElementById('navbar-inner'), document.getElementById('visualizadores'), document.getElementById('marcadores'));">
                     </video>
                     <div id="currentTime"><span id="cTimeText"></span></div>

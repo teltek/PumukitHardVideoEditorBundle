@@ -6,11 +6,13 @@ namespace Pumukit\HardVideoEditorBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
-use Pumukit\EncoderBundle\Services\JobService;
+use Pumukit\EncoderBundle\Services\DTO\JobOptions;
+use Pumukit\EncoderBundle\Services\JobCreator;
 use Pumukit\EncoderBundle\Services\ProfileService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
+use Pumukit\SchemaBundle\Document\ValueObject\Path;
 use Pumukit\SchemaBundle\Services\FactoryService;
 use Pumukit\SchemaBundle\Services\MultimediaObjectPicService;
 use Pumukit\SchemaBundle\Services\PersonService;
@@ -32,7 +34,7 @@ class DefaultController extends AbstractController
     private $factoryService;
     private $multimediaObjectPicService;
     private $personService;
-    private $jobService;
+    private $jobCreator;
     private $translator;
     private $pumukitLocales;
     private $defaultSetRole;
@@ -44,7 +46,7 @@ class DefaultController extends AbstractController
         FactoryService $factoryService,
         MultimediaObjectPicService $multimediaObjectPicService,
         PersonService $personService,
-        JobService $jobService,
+        JobCreator $jobCreator,
         TranslatorInterface $translator,
         array $pumukitLocales,
         string $defaultSetRole
@@ -55,7 +57,7 @@ class DefaultController extends AbstractController
         $this->factoryService = $factoryService;
         $this->multimediaObjectPicService = $multimediaObjectPicService;
         $this->personService = $personService;
-        $this->jobService = $jobService;
+        $this->jobCreator = $jobCreator;
         $this->translator = $translator;
         $this->pumukitLocales = $pumukitLocales;
         $this->defaultSetRole = $defaultSetRole;
@@ -88,13 +90,13 @@ class DefaultController extends AbstractController
             return $this->notReadyToCut($multimediaObject, $msg);
         }
 
-        if ($master->isOnlyAudio()) {
+        if ($master->metadata()->isOnlyAudio()) {
             $msg = 'The master is only audio';
 
             return $this->notReadyToCut($multimediaObject, $msg);
         }
 
-        if ($track->isOnlyAudio()) {
+        if ($track->metadata()->isOnlyAudio()) {
             $msg = 'Upload video track to cut';
 
             return $this->notReadyToCut($multimediaObject, $msg);
@@ -116,7 +118,7 @@ class DefaultController extends AbstractController
                 'track' => $track,
                 'role' => $role,
                 'langs' => $this->pumukitLocales,
-                'broadcastable_master' => (($broadcastable_master) ? true : false),
+                'broadcastable_master' => (bool) $broadcastable_master,
                 'direct_track_url_exists' => $direct_track_url_exists,
             ]
         );
@@ -185,17 +187,9 @@ class DefaultController extends AbstractController
         $newDuration = $out - $in;
         $parameters = ['ss' => $in, 't' => $newDuration];
 
-        $this->jobService->addJob(
-            $track->getPath(),
-            $profile,
-            $priority,
-            $multimediaObject,
-            $track->getLanguage(),
-            $track->getI18nDescription(),
-            $parameters,
-            $newDuration,
-            JobService::ADD_JOB_NOT_CHECKS
-        );
+        $jobOptions = new JobOptions($profile, $priority, $track->language(), $track->i18nDescription(), $parameters);
+        $path = Path::create($track->storage()->path()->path());
+        $this->jobCreator->fromPath($multimediaObject, $path, $jobOptions);
 
         $this->documentManager->persist($multimediaObject);
         $this->documentManager->flush();
@@ -211,10 +205,10 @@ class DefaultController extends AbstractController
     {
         $i18nMsg = $this->translator->trans($msg);
 
-        return $this->render(
-            '@PumukitHardVideoEditor/Default/error.html.twig',
-            ['multimediaObject' => $multimediaObject, 'msg' => $i18nMsg]
-        );
+        return $this->render('@PumukitHardVideoEditor/Default/error.html.twig', [
+            'multimediaObject' => $multimediaObject,
+            'msg' => $i18nMsg,
+        ]);
     }
 
     private function getRole()
