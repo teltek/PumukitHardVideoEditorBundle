@@ -187,7 +187,7 @@ class DefaultController extends AbstractController
         $newDuration = $out - $in;
         $parameters = ['ss' => $in, 't' => $newDuration];
 
-        $jobOptions = new JobOptions($profile, $priority, $track->language(), $track->i18nDescription(), $parameters);
+        $jobOptions = new JobOptions($profile, $priority, $track->language(), $track->description()->toArray(), $parameters);
         $path = Path::create($track->storage()->path()->path());
         $this->jobCreator->fromPath($multimediaObject, $path, $jobOptions);
 
