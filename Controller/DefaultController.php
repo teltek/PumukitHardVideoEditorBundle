@@ -108,7 +108,7 @@ class DefaultController extends AbstractController
             return $this->notReadyToCut($multimediaObject, $msg);
         }
 
-        $broadcastable_master = $this->profileService->getProfile('broadcastable_master');
+        $video_broadcastable = $this->profileService->getProfile('video_broadcastable');
         $direct_track_url_exists = method_exists($this->trackUrlService, 'generateDirectTrackFileUrl');
 
         return $this->render(
@@ -118,7 +118,7 @@ class DefaultController extends AbstractController
                 'track' => $track,
                 'role' => $role,
                 'langs' => $this->pumukitLocales,
-                'broadcastable_master' => (bool) $broadcastable_master,
+                'video_broadcastable' => (bool) $video_broadcastable,
                 'direct_track_url_exists' => $direct_track_url_exists,
             ]
         );
@@ -182,7 +182,7 @@ class DefaultController extends AbstractController
         }
 
         $track = $originalmmobject->getTrackWithTag('master');
-        $profile = $request->get('broadcastable_master') ? 'broadcastable_master_trimming' : 'master_trimming';
+        $profile = $request->get('video_broadcastable') ? 'video_broadcastable_trimming' : 'video_master_trimming';
         $priority = 2;
         $newDuration = $out - $in;
         $parameters = ['ss' => $in, 't' => $newDuration];
