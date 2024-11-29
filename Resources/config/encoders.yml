@@ -1,6 +1,6 @@
 pumukit_hard_video_editor:
     profiles:
-        master_trimming:
+        video_master_trimming:
             display: false
             wizard: false
             master: true
@@ -15,14 +15,15 @@ pumukit_hard_video_editor:
             channels: 1
             audio: false
             bat: |
-                avconv -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+                ffmpeg -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+                sleep 15
             streamserver:
                 name: Localmaster
                 type: store
                 host: 127.0.0.1
                 description: Local master server
                 dir_out: "%kernel.project_dir%/public/storage/masters"
-            app: avconv
+            app: ffmpeg
             rel_duration_size: 1
             rel_duration_trans: 1
             downloadable: false
@@ -57,10 +58,13 @@ pumukit_hard_video_editor:
             rel_duration_trans: 1
             downloadable: false
             target:
-        broadcastable_master_trimming:
+        video_broadcastable_trimming:
+            generate_pic: false
             display: true
-            wizard: false
-            master: true
+            wizard: true
+            master: false
+            tags: html5 podcast
+            target: PUCHWEBTV PUCHPODCAST
             format: mp4
             codec: h264
             mime_type: 'video/x-mp4'
@@ -71,8 +75,7 @@ pumukit_hard_video_editor:
             framerate: 25
             channels: 1
             audio: false
-            bat: |
-                avconv -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 22 -movflags faststart -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+            bat: ffmpeg -y -i "{{input}}" -ss {{ss}} -t {{t}} -acodec libfdk_aac -vcodec libx264 -preset slow -crf 22 -movflags faststart -threads 0 "{{output}}"
             streamserver:
                 name: Localhost
                 type: download
@@ -80,8 +83,7 @@ pumukit_hard_video_editor:
                 description: Local download server
                 dir_out: "%kernel.project_dir%/public/storage/downloads"
                 url_out: "/storage/downloads"
-            app: avconv
+            app: ffmpeg
             rel_duration_size: 1
             rel_duration_trans: 1
             downloadable: false
-            target:
