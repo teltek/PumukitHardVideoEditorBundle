@@ -191,6 +191,12 @@ class DefaultController extends AbstractController
         $path = Path::create($track->storage()->path()->path());
         $this->jobCreator->fromPath($multimediaObject, $path, $jobOptions);
 
+        if ('video_broadcastable_trimming' == $profile) {
+            $jobOptions = new JobOptions('video_broadcastable_dynamic_quality_trimming', $priority, $track->language(), $track->description()->toArray(), $parameters);
+            $path = Path::create($track->storage()->path()->path());
+            $this->jobCreator->fromPath($multimediaObject, $path, $jobOptions);
+        }
+
         $this->documentManager->persist($multimediaObject);
         $this->documentManager->flush();
 
