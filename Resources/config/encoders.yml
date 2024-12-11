@@ -16,6 +16,7 @@ pumukit_hard_video_editor:
             audio: false
             bat: |
                 ffmpeg -y -i "{{input}}" -acodec libfdk_aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -threads 0 "{{output}}"
+                sleep 15
             streamserver:
                 name: Localmaster
                 type: store
