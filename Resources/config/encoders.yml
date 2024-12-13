@@ -12,10 +12,11 @@ pumukit_hard_video_editor:
             resolution_ver: 0
             bitrate: 1 Mbps
             framerate: 25
+            nocheckduration: true
             channels: 1
             audio: false
             bat: |
-                ffmpeg -y -i "{{input}}" -acodec aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -to {{t}} -copyts -threads 0 "{{output}}"
+                ffmpeg -y -i "{{input}}" -acodec aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -copyts -threads 0 "{{output}}"
                 sleep 15
             streamserver:
                 name: Localmaster
@@ -33,7 +34,7 @@ pumukit_hard_video_editor:
             display: true
             wizard: true
             master: false
-            nocheckduration: false
+            nocheckduration: true
             tags: html5 podcast dynamic
             format: m3u8
             codec: h264
@@ -62,6 +63,7 @@ pumukit_hard_video_editor:
             generate_pic: false
             display: true
             wizard: true
+            nocheckduration: true
             master: false
             tags: html5 podcast
             target: PUCHWEBTV PUCHPODCAST
