@@ -127,8 +127,8 @@ class DefaultController extends AbstractController
      */
     public function cutAction(Request $request, MultimediaObject $originalmmobject)
     {
-        $in = (int) $request->get('in_ms');
-        $out = (int) $request->get('out_ms');
+        $in = (float) $request->get('in_ms');
+        $out = (float) $request->get('out_ms');
 
         $multimediaObject = $this->factoryService->createMultimediaObject(
             $originalmmobject->getSeries(),
@@ -139,10 +139,8 @@ class DefaultController extends AbstractController
         $multimediaObject->setRecordDate($originalmmobject->getRecordDate());
 
         $comments = $request->get('comm');
-        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate(
-            'H:i:s',
-            $in
-        ).' - '.gmdate('H:i:s', $out);
+        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().' ('.$originalmmobject->getId().') '.
+            $this->formatTime($in).' - '.$this->formatTime($out);
         $multimediaObject->setComments($comments);
 
         foreach ($this->pumukitLocales as $lang) {
@@ -205,6 +203,17 @@ class DefaultController extends AbstractController
         }
 
         return $this->redirectToRoute('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()]);
+    }
+
+    public function formatTime($milliseconds)
+    {
+        return sprintf(
+            '%02d:%02d:%02d:%03d',
+            floor($milliseconds / 3600000),
+            floor(($milliseconds % 3600000) / 60000),
+            floor(($milliseconds % 60000) / 1000),
+            $milliseconds % 1000
+        );
     }
 
     protected function notReadyToCut(MultimediaObject $multimediaObject, ?string $msg = '')
