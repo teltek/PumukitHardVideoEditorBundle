@@ -1,4 +1,4 @@
 pumukit_video_editor:
     resource: "@PumukitHardVideoEditorBundle/Controller/"
-    type:     annotation
+    type:     attribute
     prefix:   /

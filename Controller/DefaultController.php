@@ -16,16 +16,13 @@ use Pumukit\SchemaBundle\Document\ValueObject\Path;
 use Pumukit\SchemaBundle\Services\FactoryService;
 use Pumukit\SchemaBundle\Services\MultimediaObjectPicService;
 use Pumukit\SchemaBundle\Services\PersonService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Route("admin/hardvideoeditor")
- */
+#[Route('admin/hardvideoeditor')]
 class DefaultController extends AbstractController
 {
     private $documentManager;
@@ -63,11 +60,7 @@ class DefaultController extends AbstractController
         $this->defaultSetRole = $defaultSetRole;
     }
 
-    /**
-     * @Route("/{id}", name="pumukit_videocut", defaults={"roleCod" = "actor"})
-     *
-     * @ParamConverter("multimediaObject", options={"id" = "id"})
-     */
+    #[Route('/{id}', name: 'pumukit_videocut', defaults: ['roleCod' => 'actor'])]
     public function indexAction(MultimediaObject $multimediaObject): Response
     {
         $role = $this->getRole();
@@ -124,9 +117,7 @@ class DefaultController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{id}/cut", name="pumukit_videocut_action", defaults={"roleCod" = "actor"}, methods={"POST"})
-     */
+    #[Route('/{id}/cut', name: 'pumukit_videocut_action', defaults: ['roleCod' => 'actor'], methods: ['POST'])]
     public function cutAction(Request $request, MultimediaObject $originalmmobject)
     {
         $in = (int) $request->get('in_ms');
