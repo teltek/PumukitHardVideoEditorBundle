@@ -27,7 +27,7 @@
 
         <div class="row g-3">
             <div class="col-xl-7">
-                <video class="hve-video" preload="metadata" playsinline crossorigin="anonymous" src="{{ direct_track_url(track, app.request) }}"
+                <video class="hve-video" preload="metadata" playsinline crossorigin="anonymous" src="{{ track_url(track) }}"
                        data-hard-video-editor--cutter-target="video"
                        data-action="loadedmetadata->hard-video-editor--cutter#loaded timeupdate->hard-video-editor--cutter#timeUpdate play->hard-video-editor--cutter#played pause->hard-video-editor--cutter#paused click->hard-video-editor--cutter#togglePlay"></video>
 

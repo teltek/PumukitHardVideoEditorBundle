@@ -84,6 +84,7 @@ class DefaultControllerTest extends PumukitTestCase
         $this->assertCount(1, $form->filter('input[name="broadcastable"][checked]'));
         $this->assertCount(0, $form->filter('input[name="master"][checked]'));
         $this->assertSame('Lecture', $form->filter('input[name="title[en]"]')->attr('value'));
+        $this->assertStringContainsString('/trackfile/'.$this->multimediaObject->getTrackWithTag('display')->id().'.mp4', $form->filter('video')->attr('src'));
         $this->assertCount(0, $form->filter('script, [onclick], [onchange], [onkeypress], [onloadedmetadata]'));
     }
 
