@@ -5,40 +5,45 @@ declare(strict_types=1);
 namespace Pumukit\HardVideoEditorBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Pumukit\EncoderBundle\Services\DTO\JobOptions;
-use Pumukit\EncoderBundle\Services\JobCreator;
 use Pumukit\EncoderBundle\Services\ProfileService;
+use Pumukit\HardVideoEditorBundle\Services\CutService;
+use Pumukit\HardVideoEditorBundle\ValueObject\Cut;
+use Pumukit\NewAdminBundle\Controller\NewAdminControllerInterface;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
-use Pumukit\SchemaBundle\Document\ValueObject\Path;
-use Pumukit\SchemaBundle\Services\FactoryService;
-use Pumukit\SchemaBundle\Services\MultimediaObjectPicService;
+use Pumukit\SchemaBundle\Services\MultimediaObjectVoter;
 use Pumukit\SchemaBundle\Services\PersonService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('admin/hardvideoeditor')]
-class DefaultController extends AbstractController
+#[Route('/admin/hardvideoeditor')]
+#[IsGranted('ROLE_ACCESS_MULTIMEDIA_SERIES')]
+class DefaultController extends AbstractController implements NewAdminControllerInterface
 {
+    public const CSRF_TOKEN = 'hard_video_editor_cut';
+
     public function __construct(
         private readonly DocumentManager $documentManager,
         private readonly ProfileService $profileService,
-        private readonly FactoryService $factoryService,
-        private readonly MultimediaObjectPicService $multimediaObjectPicService,
         private readonly PersonService $personService,
-        private readonly JobCreator $jobCreator,
+        private readonly CutService $cutService,
         private readonly TranslatorInterface $translator,
         private readonly array $pumukitLocales,
         private readonly string $defaultSetRole,
     ) {}
 
-    #[Route('/{id}', name: 'pumukit_videocut')]
+    #[Route('/{id}', name: 'pumukit_videocut', methods: ['GET'])]
     public function indexAction(MultimediaObject $multimediaObject): Response
     {
+        $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $multimediaObject);
+
         $master = $multimediaObject->getTrackWithTag('master');
         $track = $multimediaObject->getTrackWithTag('html5') ?? $multimediaObject->getTrackWithTag('display');
 
@@ -65,7 +70,7 @@ class DefaultController extends AbstractController
         return $this->render('@PumukitHardVideoEditor/Default/index.html.twig', [
             'mm' => $multimediaObject,
             'track' => $track,
-            'role' => $this->getRole(),
+            'role' => $this->documentManager->getRepository(Role::class)->findOneBy(['cod' => $this->defaultSetRole]),
             'langs' => $this->pumukitLocales,
             'video_broadcastable' => (bool) $this->profileService->getProfile('video_broadcastable'),
         ]);
@@ -74,57 +79,35 @@ class DefaultController extends AbstractController
     #[Route('/{id}/cut', name: 'pumukit_videocut_action', methods: ['POST'])]
     public function cutAction(Request $request, MultimediaObject $originalmmobject): Response
     {
+        $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $originalmmobject);
+
         $parameters = $request->request;
-        $in = (int) $parameters->get('in_ms');
-        $out = (int) $parameters->get('out_ms');
-
-        $multimediaObject = $this->factoryService->createMultimediaObject($originalmmobject->getSeries(), true, $this->getUser());
-
-        $multimediaObject->setRecordDate($originalmmobject->getRecordDate());
-
-        $comments = $parameters->getString('comm');
-        $comments .= "\n---\n CORTADO DE ".$originalmmobject->getTitle().'('.$originalmmobject->getId().') '.gmdate('H:i:s', $in).' - '.gmdate('H:i:s', $out);
-        $multimediaObject->setComments($comments);
-
-        foreach ($this->pumukitLocales as $lang) {
-            $multimediaObject->setTitle($parameters->getString('title_'.$lang), $lang);
-            $multimediaObject->setDescription($parameters->getString('descript_'.$lang), $lang);
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN, $parameters->getString('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
         }
 
-        $base64 = $parameters->getString('hidden_src_img');
-        if ('' !== $base64) {
-            $decodedData = substr($base64, 22, strlen($base64));
-            $format = substr($base64, strpos($base64, '/') + 1, strpos($base64, ';') - 1 - strpos($base64, '/'));
-
-            $this->multimediaObjectPicService->addPicMem($multimediaObject, base64_decode($decodedData), $format);
+        $title = [];
+        $description = [];
+        foreach ($this->pumukitLocales as $locale) {
+            $title[$locale] = $parameters->getString('title_'.$locale);
+            $description[$locale] = $parameters->getString('descript_'.$locale);
         }
 
-        $person = null;
-        if ('on' === $parameters->get('new_person') && '' !== $parameters->getString('person')) {
-            $person = new Person();
-            $person->setName($parameters->getString('person'));
-            foreach ($this->pumukitLocales as $lang) {
-                $person->setFirm($parameters->getString('firm_'.$lang), $lang);
-                $person->setPost($parameters->getString('post_'.$lang), $lang);
-            }
-
-            $person = $this->personService->savePerson($person);
-        } elseif ('0' !== $parameters->getString('person_id', '0')) {
-            $person = $this->personService->findPersonById($parameters->getString('person_id'));
+        try {
+            $cut = new Cut(
+                (float) $parameters->getString('in_ms'),
+                (float) $parameters->getString('out_ms'),
+                $title,
+                $description,
+                $parameters->getString('comm'),
+                $parameters->has('video_broadcastable'),
+                $this->picture($parameters->getString('hidden_src_img')),
+            );
+            $this->cutService->assertValid($originalmmobject, $cut);
+            $multimediaObject = $this->cutService->cut($originalmmobject, $cut, $this->person($parameters), $this->getUser());
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
-
-        if ($person) {
-            $multimediaObject = $this->personService->createRelationPerson($person, $this->getRole(), $multimediaObject);
-        }
-
-        $track = $originalmmobject->getTrackWithTag('master');
-        $profile = $parameters->get('video_broadcastable') ? 'video_broadcastable_trimming' : 'video_master_trimming';
-
-        $jobOptions = new JobOptions($profile, 2, $track->language(), $track->description()->toArray(), ['ss' => $in, 't' => $out - $in]);
-        $this->jobCreator->fromPath($multimediaObject, Path::create($track->storage()->path()->path()), $jobOptions);
-
-        $this->documentManager->persist($multimediaObject);
-        $this->documentManager->flush();
 
         if ($request->isXmlHttpRequest()) {
             return new Response('DONE');
@@ -133,16 +116,47 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()]);
     }
 
+    private function picture(string $dataUrl): ?string
+    {
+        if ('' === $dataUrl) {
+            return null;
+        }
+
+        if (!preg_match('#^data:image/[a-z]+;base64,(.+)$#s', $dataUrl, $matches) || false === $picture = base64_decode($matches[1], true)) {
+            throw new \InvalidArgumentException('The thumbnail is not a valid image');
+        }
+
+        return $picture;
+    }
+
+    private function person(InputBag $parameters): ?Person
+    {
+        if ('on' === $parameters->get('new_person') && '' !== trim($parameters->getString('person'))) {
+            $person = new Person();
+            $person->setName(trim($parameters->getString('person')));
+            foreach ($this->pumukitLocales as $locale) {
+                $person->setFirm($parameters->getString('firm_'.$locale), $locale);
+                $person->setPost($parameters->getString('post_'.$locale), $locale);
+            }
+
+            return $this->personService->savePerson($person);
+        }
+
+        $personId = $parameters->getString('person_id', '0');
+        if ('0' === $personId || '' === $personId) {
+            return null;
+        }
+
+        $person = $this->documentManager->getRepository(Person::class)->find($personId);
+
+        return $person instanceof Person ? $person : null;
+    }
+
     private function notReadyToCut(MultimediaObject $multimediaObject, string $msg): Response
     {
         return $this->render('@PumukitHardVideoEditor/Default/error.html.twig', [
             'multimediaObject' => $multimediaObject,
             'msg' => $this->translator->trans($msg),
         ]);
-    }
-
-    private function getRole(): ?Role
-    {
-        return $this->documentManager->getRepository(Role::class)->findOneBy(['cod' => $this->defaultSetRole]);
     }
 }

@@ -4,7 +4,7 @@
     <div>
         <div id="messages"></div>
         <form id="videotrim" autocomplete="off" method="POST" action="{{ path('pumukit_videocut_action', {'id': mm.id}) }}" onkeypress="stopEnterSubmitting(window.event)">
-            <input type="hidden" name="id" value="{{ mm.id }}"/>
+            <input type="hidden" name="_token" value="{{ csrf_token(constant('Pumukit\\HardVideoEditorBundle\\Controller\\DefaultController::CSRF_TOKEN')) }}"/>
             <div id="visualizadores"></div>
             <div id="container">
                 <div id="metaContainer">
@@ -210,6 +210,7 @@
 
         //new Ajax.Autocompleter('cut_person', 'name_auto_complete', '/editar.php/persons/autoComplete', {minChars: 2, indicator: 'indicator1'});
 
+        {% if role %}
         $(cut_person).autocomplete({
             source: "{{ path('pumukitnewadmin_person_auto_complete', {'mmId': mm.id, 'roleId': role.id})|raw }}",
             minLength: 3,
@@ -221,6 +222,7 @@
                 .append("<a title=\"" + item.id + "\">" + item.label + "<br><span style='color:grey'>" + item.desc + "</span></a>")
                 .appendTo(ul);
         };
+        {% endif %}
 
         $(cut_person).on("input", function () {
             $(cut_person_id).val(0);

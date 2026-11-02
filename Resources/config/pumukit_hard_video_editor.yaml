@@ -11,6 +11,8 @@ services:
     resource: '../../Controller/'
     tags: ['controller.service_arguments']
 
+  Pumukit\HardVideoEditorBundle\Services\CutService: ~
+
   Pumukit\HardVideoEditorBundle\Services\MenuService:
     class: Pumukit\HardVideoEditorBundle\Services\MenuService
     tags:

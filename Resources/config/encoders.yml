@@ -1,62 +1,41 @@
 pumukit_hard_video_editor:
     profiles:
         video_master_trimming:
+            generate_pic: false
+            nocheckduration: true
             display: false
             wizard: false
             master: true
-            format: mp4
-            codec: h264
-            mime_type: 'video/x-mp4'
+            downloadable: false
+            target: ''
+            tags: ''
             extension: mp4
             resolution_hor: 0
             resolution_ver: 0
-            bitrate: 1 Mbps
-            framerate: 25
-            nocheckduration: true
-            channels: 1
             audio: false
+            image: false
+            document: false
             bat: |
-                ffmpeg -y -i "{{input}}" -acodec aac -vcodec libx264 -preset slow -crf 15 -ss {{ss}} -t {{t}} -copyts -threads 0 "{{output}}"
+                ffmpeg -y -ss {{ss}} -i "{{input}}" -t {{t}} -acodec aac -vcodec libx264 -preset slow -crf 15 -threads 0 "{{output}}"
                 sleep 15
             streamserver:
-                name: Localmaster
-                type: store
-                host: 127.0.0.1
-                description: Local master server
                 dir_out: "%pumukit.masters_dir%"
-            app: ffmpeg
-            rel_duration_size: 1
-            rel_duration_trans: 1
-            downloadable: false
-            target:
-            generate_pic: false
         video_broadcastable_trimming:
             generate_pic: false
-            display: true
-            wizard: true
             nocheckduration: true
+            display: true
+            wizard: false
             master: false
-            tags: html5 podcast
+            downloadable: true
             target: PUCHWEBTV PUCHPODCAST
-            format: mp4
-            codec: h264
-            mime_type: 'video/x-mp4'
+            tags: html5 podcast
             extension: mp4
             resolution_hor: 0
             resolution_ver: 0
-            bitrate: 1 Mbps
-            framerate: 25
-            channels: 1
             audio: false
-            bat: ffmpeg -y -i "{{input}}" -ss {{ss}} -t {{t}} -acodec libfdk_aac -vcodec libx264 -preset slow -crf 22 -movflags faststart -threads 0 "{{output}}"
+            image: false
+            document: false
+            bat: ffmpeg -y -ss {{ss}} -i "{{input}}" -t {{t}} -acodec libfdk_aac -b:a 128k -ac 2 -ar 44100 -vcodec libx264 -preset slow -crf 22 -movflags faststart -threads 0 "{{output}}"
             streamserver:
-                name: Localhost
-                type: download
-                host: 127.0.0.1
-                description: Local download server
                 dir_out: "%pumukit.downloads_dir%"
                 url_out: "%pumukit.downloads_url%"
-            app: ffmpeg
-            rel_duration_size: 1
-            rel_duration_trans: 1
-            downloadable: true

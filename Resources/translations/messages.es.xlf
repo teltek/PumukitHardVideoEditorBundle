@@ -129,6 +129,10 @@
         <source>Go back</source>
         <target>Volver</target>
       </trans-unit>
+      <trans-unit id="48dc25b17b5191300c07e0709fa3e283" resname="Cut from %title% (%id%): %start% - %end%">
+        <source>Cut from %title% (%id%): %start% - %end%</source>
+        <target>Cortado de %title% (%id%): %start% - %end%</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
