@@ -8,10 +8,12 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Pumukit\EncoderBundle\Services\DTO\JobOptions;
 use Pumukit\EncoderBundle\Services\JobCreator;
 use Pumukit\HardVideoEditorBundle\ValueObject\Cut;
+use Pumukit\SchemaBundle\Document\EmbeddedTag;
 use Pumukit\SchemaBundle\Document\MediaType\Track;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
+use Pumukit\SchemaBundle\Document\Tag;
 use Pumukit\SchemaBundle\Document\User;
 use Pumukit\SchemaBundle\Document\ValueObject\Path;
 use Pumukit\SchemaBundle\Services\EmbeddedBroadcastService;
@@ -110,9 +112,13 @@ final class CutService
         $multimediaObject->setCopyright($original->getCopyright());
         $multimediaObject->setLicense($original->getLicense());
 
-        foreach ($original->getTags() as $tag) {
-            if (!$tag->isPubTag() && !in_array($tag->getCod(), self::PUBLICATION_TAGS, true)) {
-                $this->tagService->addTagToMultimediaObject($multimediaObject, $tag->getId(), false);
+        foreach ($original->getTags() as $embeddedTag) {
+            if ($embeddedTag->isPubTag() || in_array($embeddedTag->getCod(), self::PUBLICATION_TAGS, true)) {
+                continue;
+            }
+            $tag = $this->tag($embeddedTag);
+            if ($tag instanceof Tag) {
+                $this->tagService->addTag($multimediaObject, $tag, false);
             }
         }
 
@@ -129,6 +135,13 @@ final class CutService
         if ($embeddedBroadcast = $original->getEmbeddedBroadcast()) {
             $multimediaObject->setEmbeddedBroadcast($this->embeddedBroadcastService->cloneResource($embeddedBroadcast));
         }
+    }
+
+    private function tag(EmbeddedTag $embeddedTag): ?Tag
+    {
+        $repository = $this->documentManager->getRepository(Tag::class);
+
+        return $repository->find($embeddedTag->getId()) ?? $repository->findOneBy(['cod' => $embeddedTag->getCod()]);
     }
 
     private function master(MultimediaObject $original): Track

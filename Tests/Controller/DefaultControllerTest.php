@@ -188,6 +188,34 @@ class DefaultControllerTest extends PumukitTestCase
         $this->assertSame('secret', $cut->getEmbeddedBroadcast()->getPassword());
     }
 
+    public function testTagsWhoseDocumentWasRecreatedOrRemovedDoNotBreakTheCut(): void
+    {
+        $root = $this->tag('ROOT', 'ROOT|');
+        $subject = $this->tag('U310000', 'ROOT|U310000|', $root);
+        $removed = $this->tag('REMOVED', 'ROOT|REMOVED|', $root);
+        $this->dm->flush();
+        $this->multimediaObject->addTag($root);
+        $this->multimediaObject->addTag($subject);
+        $this->multimediaObject->addTag($removed);
+        $this->dm->flush();
+        $this->dm->getDocumentCollection(Tag::class)->deleteMany(['_id' => ['$in' => [new ObjectId($root->getId()), new ObjectId($removed->getId())]]]);
+        $this->dm->clear();
+        $newRoot = $this->tag('ROOT', 'ROOT|');
+        $this->dm->flush();
+        $this->dm->getRepository(Tag::class)->findOneBy(['cod' => 'U310000'])->setParent($newRoot);
+        $this->dm->flush();
+        $this->multimediaObject = $this->dm->getRepository(MultimediaObject::class)->find($this->multimediaObject->getId());
+        $this->login(PermissionProfile::SCOPE_GLOBAL);
+
+        $this->cut(['start' => '0', 'end' => '10', 'broadcastable' => '1']);
+
+        $this->assertResponseRedirects();
+        $cut = $this->lastCut();
+        $this->assertTrue($cut->containsTagWithCod('U310000'));
+        $this->assertTrue($cut->containsTagWithCod('ROOT'));
+        $this->assertFalse($cut->containsTagWithCod('REMOVED'));
+    }
+
     public function testThePersonChosenInTheEditorIsAddedWithTheConfiguredRole(): void
     {
         $person = new Person();
