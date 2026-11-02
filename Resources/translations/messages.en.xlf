@@ -5,133 +5,193 @@
       <tool tool-id="symfony" tool-name="Symfony"/>
     </header>
     <body>
-      <trans-unit id="ce21470ab49d1d1976bc3dc72438c183" resname="Metadata">
-        <source>Metadata</source>
-        <target>Metadata</target>
+      <trans-unit id="8c57fb421b06637bd75dafc8c00de648" resname="Back one second">
+        <source>Back one second</source>
+        <target>Back one second</target>
       </trans-unit>
-      <trans-unit id="aba0ca7b07fcd994773422202f8a52b8" resname="Reset form">
-        <source>Reset form</source>
-        <target>Reset form</target>
-      </trans-unit>
-      <trans-unit id="b78a3223503896721cca1303f776159b" resname="Title">
-        <source>Title</source>
-        <target>Title</target>
-      </trans-unit>
-      <trans-unit id="b5a7adde1af5c87d7fd797b6245c2a39" resname="Description">
-        <source>Description</source>
-        <target>Description</target>
-      </trans-unit>
-      <trans-unit id="8413c683b4b27cc3f4dbd4c90329d8ba" resname="Comments">
-        <source>Comments</source>
-        <target>Comments</target>
-      </trans-unit>
-      <trans-unit id="78386ec8f2845742c324a3d7d3e800ff" resname="Participant">
-        <source>Participant</source>
-        <target>Participant</target>
-      </trans-unit>
-      <trans-unit id="e89d72c5806eb0142da84532cf9fd287" resname="New person">
-        <source>New person</source>
-        <target>New person</target>
-      </trans-unit>
-      <trans-unit id="667c1b8275a93e3f20ff88b55c1334d7" resname="name to search for">
-        <source>name to search for</source>
-        <target>name to search for</target>
-      </trans-unit>
-      <trans-unit id="49ee3087348e8d44e1feda1917443987" resname="Name">
-        <source>Name</source>
-        <target>Name</target>
-      </trans-unit>
-      <trans-unit id="03d947a2158373c3b9d74325850cb8b9" resname="Post">
-        <source>Post</source>
-        <target>Post</target>
-      </trans-unit>
-      <trans-unit id="de861263139358131ae7d4f271030033" resname="Firm">
-        <source>Firm</source>
-        <target>Firm</target>
-      </trans-unit>
-      <trans-unit id="4b047c88228cfe428ba1c0da10b34c4d" resname="Generate broadcastable master">
-        <source>Generate broadcastable master</source>
-        <target>Generate broadcastable master</target>
-      </trans-unit>
-      <trans-unit id="b7c161bb87bb0308fb25e6f68d0a5632" resname="Thumbnail">
-        <source>Thumbnail</source>
-        <target>Thumbnail</target>
-      </trans-unit>
-      <trans-unit id="697538b685f844a23ffde6524a2bbb98" resname="Delete thumbnail">
-        <source>Delete thumbnail</source>
-        <target>Delete thumbnail</target>
-      </trans-unit>
-      <trans-unit id="31fde7b05ac8952dacf4af8a704074ec" resname="Preview">
-        <source>Preview</source>
-        <target>Preview</target>
-      </trans-unit>
-      <trans-unit id="aec967b721d5260f0f65cb2b474c5be3" resname="Upload a local file.">
-        <source>Upload a local file.</source>
-        <target>Upload a local file.</target>
-      </trans-unit>
-      <trans-unit id="a6122a65eaa676f700ae68d393054a37" resname="Start">
-        <source>Start</source>
-        <target>Start</target>
-      </trans-unit>
-      <trans-unit id="87557f11575c0ad78e4e28abedc13b6e" resname="End">
-        <source>End</source>
-        <target>End</target>
-      </trans-unit>
-      <trans-unit id="f25eb8caf7c2861ed7a1107150e0eb16" resname="Cut and continue">
-        <source>Cut and continue</source>
-        <target>Cut and continue</target>
-      </trans-unit>
-      <trans-unit id="eb334dca00e390e0d3ebf52d205807d7" resname="Cut">
-        <source>Cut</source>
-        <target>Cut</target>
-      </trans-unit>
-      <trans-unit id="aa8d8335bdd4c63f9efcf0f8189d6dcc" resname="End time should be greater than the start time">
-        <source>End time should be greater than the start time</source>
-        <target>End time should be greater than the start time</target>
-      </trans-unit>
-      <trans-unit id="75c921f925cca6252e0a05297c6b0828" resname="End time should be less than the video duration">
-        <source>End time should be less than the video duration</source>
-        <target>End time should be less than the video duration</target>
-      </trans-unit>
-      <trans-unit id="c077787e13f45e547e2c6cbbb4069644" resname="Cut done">
-        <source>Cut done</source>
-        <target>Cut done</target>
-      </trans-unit>
-      <trans-unit id="8811fbe6bfa2ad820807c0503ce72741" resname="Cut multimedia object">
-        <source>Cut multimedia object</source>
-        <target>Cut multimedia object</target>
-      </trans-unit>
-      <trans-unit id="55cede282658111f063c9e673053313b" resname="There aren't master track">
-        <source>There aren't master track</source>
-        <target>There aren't master track</target>
-      </trans-unit>
-      <trans-unit id="ebd7a6880acb064cd2b7b439de8dcf70" resname="There aren't html5 track">
-        <source>There aren't html5 track</source>
-        <target>There aren't html5 track</target>
-      </trans-unit>
-      <trans-unit id="da74240aa08b287db2941e93cfd9bdf2" resname="The master is only audio">
-        <source>The master is only audio</source>
-        <target>The master is only audio</target>
-      </trans-unit>
-      <trans-unit id="e9e3ba0b377e82e9ea5d7fcc8787b25f" resname="Upload video track to cut">
-        <source>Upload video track to cut</source>
-        <target>Upload video track to cut</target>
+      <trans-unit id="96ce660428371d6ac51a0bace4f5c4f9" resname="Broadcastable">
+        <source>Broadcastable</source>
+        <target>Broadcastable</target>
       </trans-unit>
       <trans-unit id="2bb4fd7115285b09eff83088483b40d9" resname="Can't cut multistream videos">
         <source>Can't cut multistream videos</source>
         <target>Can't cut multistream videos</target>
       </trans-unit>
-      <trans-unit id="94f786faf9ff11e78c3f9a214cf093ae" resname="Something was wrong">
-        <source>Something was wrong</source>
-        <target>Something was wrong</target>
+      <trans-unit id="ea4788705e6873b424c65e91c2846b19" resname="Cancel">
+        <source>Cancel</source>
+        <target>Cancel</target>
       </trans-unit>
-      <trans-unit id="f9c635d6f9ff11e78c3f9a214cf093ae" resname="Go back">
-        <source>Go back</source>
-        <target>Go back</target>
+      <trans-unit id="d942b9474c6d69a448d96727f8306e71" resname="Choose at least one track to generate.">
+        <source>Choose at least one track to generate.</source>
+        <target>Choose at least one track to generate.</target>
+      </trans-unit>
+      <trans-unit id="7d53acee92ef77dc8bb3b92e66bd3736" resname="Click the timeline to move the playhead and drag the handles to adjust the cut. Space plays or pauses, the arrows move one second (five with Shift) and I and O set the start and the end at the playhead.">
+        <source>Click the timeline to move the playhead and drag the handles to adjust the cut. Space plays or pauses, the arrows move one second (five with Shift) and I and O set the start and the end at the playhead.</source>
+        <target>Click the timeline to move the playhead and drag the handles to adjust the cut. Space plays or pauses, the arrows move one second (five with Shift) and I and O set the start and the end at the playhead.</target>
+      </trans-unit>
+      <trans-unit id="8413c683b4b27cc3f4dbd4c90329d8ba" resname="Comments">
+        <source>Comments</source>
+        <target>Comments</target>
+      </trans-unit>
+      <trans-unit id="eb334dca00e390e0d3ebf52d205807d7" resname="Cut">
+        <source>Cut</source>
+        <target>Cut</target>
+      </trans-unit>
+      <trans-unit id="f25eb8caf7c2861ed7a1107150e0eb16" resname="Cut and continue">
+        <source>Cut and continue</source>
+        <target>Cut and continue</target>
+      </trans-unit>
+      <trans-unit id="6d5f5ece4e3869feeb3fd7af8adf9ad1" resname="Cut done. The new video is being processed.">
+        <source>Cut done. The new video is being processed.</source>
+        <target>Cut done. The new video is being processed.</target>
       </trans-unit>
       <trans-unit id="48dc25b17b5191300c07e0709fa3e283" resname="Cut from %title% (%id%): %start% - %end%">
         <source>Cut from %title% (%id%): %start% - %end%</source>
         <target>Cut from %title% (%id%): %start% - %end%</target>
+      </trans-unit>
+      <trans-unit id="8811fbe6bfa2ad820807c0503ce72741" resname="Cut multimedia object">
+        <source>Cut multimedia object</source>
+        <target>Cut multimedia object</target>
+      </trans-unit>
+      <trans-unit id="697538b685f844a23ffde6524a2bbb98" resname="Delete thumbnail">
+        <source>Delete thumbnail</source>
+        <target>Delete thumbnail</target>
+      </trans-unit>
+      <trans-unit id="b5a7adde1af5c87d7fd797b6245c2a39" resname="Description">
+        <source>Description</source>
+        <target>Description</target>
+      </trans-unit>
+      <trans-unit id="d4afd4eca58b3c38ad78a1577aa95d23" resname="Duration of the cut">
+        <source>Duration of the cut</source>
+        <target>Duration of the cut</target>
+      </trans-unit>
+      <trans-unit id="87557f11575c0ad78e4e28abedc13b6e" resname="End">
+        <source>End</source>
+        <target>End</target>
+      </trans-unit>
+      <trans-unit id="de861263139358131ae7d4f271030033" resname="Firm">
+        <source>Firm</source>
+        <target>Firm</target>
+      </trans-unit>
+      <trans-unit id="1e3e863948666c9d7af218b48360deda" resname="Forward one second">
+        <source>Forward one second</source>
+        <target>Forward one second</target>
+      </trans-unit>
+      <trans-unit id="22b653bd8d2edcebb9e0036b4ac79262" resname="Go back">
+        <source>Go back</source>
+        <target>Go back</target>
+      </trans-unit>
+      <trans-unit id="fab957c4a4a930630608509af97ce0b2" resname="High quality copy. Alone, the video can be played once it is published.">
+        <source>High quality copy. Alone, the video can be played once it is published.</source>
+        <target>High quality copy. Alone, the video can be played once it is published.</target>
+      </trans-unit>
+      <trans-unit id="f03bde11d261f185cbacfa32c1c6538c" resname="Master">
+        <source>Master</source>
+        <target>Master</target>
+      </trans-unit>
+      <trans-unit id="e0df3aa8ec6ecedfda5d396806b83898" resname="Metadata of the new video">
+        <source>Metadata of the new video</source>
+        <target>Metadata of the new video</target>
+      </trans-unit>
+      <trans-unit id="49ee3087348e8d44e1feda1917443987" resname="Name">
+        <source>Name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="667c1b8275a93e3f20ff88b55c1334d7" resname="name to search for">
+        <source>name to search for</source>
+        <target>name to search for</target>
+      </trans-unit>
+      <trans-unit id="e89d72c5806eb0142da84532cf9fd287" resname="New person">
+        <source>New person</source>
+        <target>New person</target>
+      </trans-unit>
+      <trans-unit id="3c4684d2d502d7f9d20e05451c2f581c" resname="Next frame">
+        <source>Next frame</source>
+        <target>Next frame</target>
+      </trans-unit>
+      <trans-unit id="15b4faf27733c68b357c10e73f53fd9e" resname="Play / pause">
+        <source>Play / pause</source>
+        <target>Play / pause</target>
+      </trans-unit>
+      <trans-unit id="03d947a2158373c3b9d74325850cb8b9" resname="Post">
+        <source>Post</source>
+        <target>Post</target>
+      </trans-unit>
+      <trans-unit id="a92a5516052a584334ea95c3b42566c5" resname="Preview the cut">
+        <source>Preview the cut</source>
+        <target>Preview the cut</target>
+      </trans-unit>
+      <trans-unit id="529a032eab49b8ddc6f49f8bcc086607" resname="Previous frame">
+        <source>Previous frame</source>
+        <target>Previous frame</target>
+      </trans-unit>
+      <trans-unit id="722fe73d09e6e4cd532bb881fc387e43" resname="Ready to be played. Alone, it is also the master of the new video.">
+        <source>Ready to be played. Alone, it is also the master of the new video.</source>
+        <target>Ready to be played. Alone, it is also the master of the new video.</target>
+      </trans-unit>
+      <trans-unit id="a6122a65eaa676f700ae68d393054a37" resname="Start">
+        <source>Start</source>
+        <target>Start</target>
+      </trans-unit>
+      <trans-unit id="081c51735d46593766af3c9a434d4834" resname="The cut could not be done.">
+        <source>The cut could not be done.</source>
+        <target>The cut could not be done.</target>
+      </trans-unit>
+      <trans-unit id="a9cce60ca81db9f62b87e85b2a3ad458" resname="The end of the cut must be after its start.">
+        <source>The end of the cut must be after its start.</source>
+        <target>The end of the cut must be after its start.</target>
+      </trans-unit>
+      <trans-unit id="382878cfb50c35516f76f2b78b8ff5a4" resname="The frame could not be captured from this video.">
+        <source>The frame could not be captured from this video.</source>
+        <target>The frame could not be captured from this video.</target>
+      </trans-unit>
+      <trans-unit id="da74240aa08b287db2941e93cfd9bdf2" resname="The master is only audio">
+        <source>The master is only audio</source>
+        <target>The master is only audio</target>
+      </trans-unit>
+      <trans-unit id="f873744911e7ca4469cb158442b8b8ac" resname="The new video is created in the same series, with the metadata, people and access of this one but without its publication channels.">
+        <source>The new video is created in the same series, with the metadata, people and access of this one but without its publication channels.</source>
+        <target>The new video is created in the same series, with the metadata, people and access of this one but without its publication channels.</target>
+      </trans-unit>
+      <trans-unit id="ebd7a6880acb064cd2b7b439de8dcf70" resname="There aren't html5 track">
+        <source>There aren't html5 track</source>
+        <target>There aren't html5 track</target>
+      </trans-unit>
+      <trans-unit id="55cede282658111f063c9e673053313b" resname="There aren't master track">
+        <source>There aren't master track</source>
+        <target>There aren't master track</target>
+      </trans-unit>
+      <trans-unit id="dbd5ce861ad1b4dd142bc362c56e496e" resname="This video cannot be cut">
+        <source>This video cannot be cut</source>
+        <target>This video cannot be cut</target>
+      </trans-unit>
+      <trans-unit id="b7c161bb87bb0308fb25e6f68d0a5632" resname="Thumbnail">
+        <source>Thumbnail</source>
+        <target>Thumbnail</target>
+      </trans-unit>
+      <trans-unit id="b78a3223503896721cca1303f776159b" resname="Title">
+        <source>Title</source>
+        <target>Title</target>
+      </trans-unit>
+      <trans-unit id="cc6492ccaf98fb3b201ba212b3a02cdb" resname="Tracks to generate">
+        <source>Tracks to generate</source>
+        <target>Tracks to generate</target>
+      </trans-unit>
+      <trans-unit id="aec967b721d5260f0f65cb2b474c5be3" resname="Upload a local file.">
+        <source>Upload a local file.</source>
+        <target>Upload a local file.</target>
+      </trans-unit>
+      <trans-unit id="e9e3ba0b377e82e9ea5d7fcc8787b25f" resname="Upload video track to cut">
+        <source>Upload video track to cut</source>
+        <target>Upload video track to cut</target>
+      </trans-unit>
+      <trans-unit id="c32503ecd7b37f5f718e44cd2e6be953" resname="Use the current frame">
+        <source>Use the current frame</source>
+        <target>Use the current frame</target>
+      </trans-unit>
+      <trans-unit id="d8014da84033947bd09ccec30a173d92" resname="Use the playhead">
+        <source>Use the playhead</source>
+        <target>Use the playhead</target>
       </trans-unit>
     </body>
   </file>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pumukit\HardVideoEditorBundle\Services;
 
 use Pumukit\NewAdminBundle\Menu\ItemInterface;
+use Pumukit\SchemaBundle\Security\Permission;
 
 class MenuService implements ItemInterface
 {
@@ -20,7 +21,7 @@ class MenuService implements ItemInterface
 
     public function getAccessRole(): string
     {
-        return 'ROLE_ACCESS_MULTIMEDIA_SERIES';
+        return Permission::ACCESS_MULTIMEDIA_SERIES;
     }
 
     public function isFullscreen(): bool
@@ -30,7 +31,7 @@ class MenuService implements ItemInterface
 
     public function getIcon(): string
     {
-        return 'mdi-content-content-cut';
+        return 'fa-solid fa-scissors';
     }
 
     public function getServiceTag(): string

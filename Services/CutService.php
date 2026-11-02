@@ -14,15 +14,18 @@ use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
 use Pumukit\SchemaBundle\Document\User;
 use Pumukit\SchemaBundle\Document\ValueObject\Path;
+use Pumukit\SchemaBundle\Services\EmbeddedBroadcastService;
 use Pumukit\SchemaBundle\Services\FactoryService;
 use Pumukit\SchemaBundle\Services\MultimediaObjectPicService;
 use Pumukit\SchemaBundle\Services\PersonService;
+use Pumukit\SchemaBundle\Services\TagService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CutService
 {
     public const PICTURE_EXTENSIONS = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
     private const JOB_PRIORITY = 2;
+    private const PUBLICATION_TAGS = ['PUBCHANNELS', 'PUBDECISIONS'];
     private const DURATION_MARGIN = 1.0;
 
     public function __construct(
@@ -31,12 +34,17 @@ final class CutService
         private readonly MultimediaObjectPicService $multimediaObjectPicService,
         private readonly PersonService $personService,
         private readonly JobCreator $jobCreator,
+        private readonly TagService $tagService,
+        private readonly EmbeddedBroadcastService $embeddedBroadcastService,
         private readonly TranslatorInterface $translator,
         private readonly string $defaultSetRole,
     ) {}
 
     public function assertValid(MultimediaObject $original, Cut $cut): void
     {
+        if ([] === $cut->profiles()) {
+            throw new \InvalidArgumentException('Choose at least one track to generate');
+        }
         $this->assertValidRange($original, $this->master($original), $cut);
         if (null !== $cut->picture) {
             $this->pictureExtension($cut->picture);
@@ -50,9 +58,9 @@ final class CutService
         $pictureExtension = null === $cut->picture ? null : $this->pictureExtension($cut->picture);
 
         $multimediaObject = $this->factoryService->createMultimediaObject($original->getSeries(), true, $user);
-        $multimediaObject->setRecordDate($original->getRecordDate());
+        $this->inheritMetadata($original, $multimediaObject);
         foreach ($cut->title as $locale => $title) {
-            $multimediaObject->setTitle($title, $locale);
+            $multimediaObject->setTitle('' !== trim($title) ? $title : $original->getTitle($locale), $locale);
         }
         foreach ($cut->description as $locale => $description) {
             $multimediaObject->setDescription($description, $locale);
@@ -90,6 +98,37 @@ final class CutService
         $milliseconds = (int) round($seconds * 1000);
 
         return sprintf('%02d:%02d:%02d.%03d', intdiv($milliseconds, 3600000), intdiv($milliseconds % 3600000, 60000), intdiv($milliseconds % 60000, 1000), $milliseconds % 1000);
+    }
+
+    private function inheritMetadata(MultimediaObject $original, MultimediaObject $multimediaObject): void
+    {
+        $multimediaObject->setRecordDate($original->getRecordDate());
+        $multimediaObject->setI18nTitle($original->getI18nTitle());
+        $multimediaObject->setI18nSubtitle($original->getI18nSubtitle());
+        $multimediaObject->setI18nLine2($original->getI18nLine2());
+        $multimediaObject->setI18nKeywords($original->getI18nKeywords());
+        $multimediaObject->setCopyright($original->getCopyright());
+        $multimediaObject->setLicense($original->getLicense());
+
+        foreach ($original->getTags() as $tag) {
+            if (!$tag->isPubTag() && !in_array($tag->getCod(), self::PUBLICATION_TAGS, true)) {
+                $this->tagService->addTagToMultimediaObject($multimediaObject, $tag->getId(), false);
+            }
+        }
+
+        foreach ($original->getRoles() as $embeddedRole) {
+            foreach ($embeddedRole->getPeople() as $embeddedPerson) {
+                $multimediaObject->addPersonWithRole($embeddedPerson, $embeddedRole);
+            }
+        }
+
+        foreach ($original->getGroups() as $group) {
+            $multimediaObject->addGroup($group);
+        }
+
+        if ($embeddedBroadcast = $original->getEmbeddedBroadcast()) {
+            $multimediaObject->setEmbeddedBroadcast($this->embeddedBroadcastService->cloneResource($embeddedBroadcast));
+        }
     }
 
     private function master(MultimediaObject $original): Track

@@ -5,23 +5,25 @@ declare(strict_types=1);
 namespace Pumukit\HardVideoEditorBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Pumukit\EncoderBundle\Services\ProfileService;
 use Pumukit\HardVideoEditorBundle\Services\CutService;
 use Pumukit\HardVideoEditorBundle\ValueObject\Cut;
 use Pumukit\NewAdminBundle\Controller\NewAdminControllerInterface;
+use Pumukit\SchemaBundle\Document\MediaType\Track;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
 use Pumukit\SchemaBundle\Services\MultimediaObjectVoter;
 use Pumukit\SchemaBundle\Services\PersonService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/hardvideoeditor')]
 #[IsGranted('ROLE_ACCESS_MULTIMEDIA_SERIES')]
@@ -31,77 +33,55 @@ class DefaultController extends AbstractController implements NewAdminController
 
     public function __construct(
         private readonly DocumentManager $documentManager,
-        private readonly ProfileService $profileService,
         private readonly PersonService $personService,
         private readonly CutService $cutService,
-        private readonly TranslatorInterface $translator,
         private readonly array $pumukitLocales,
         private readonly string $defaultSetRole,
+        private readonly bool $isEnabled,
     ) {}
 
     #[Route('/{id}', name: 'pumukit_videocut', methods: ['GET'])]
     public function indexAction(MultimediaObject $multimediaObject): Response
     {
-        $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $multimediaObject);
+        $this->assertCanCut($multimediaObject);
 
-        $master = $multimediaObject->getTrackWithTag('master');
         $track = $multimediaObject->getTrackWithTag('html5') ?? $multimediaObject->getTrackWithTag('display');
-
-        if (!$master) {
-            return $this->notReadyToCut($multimediaObject, "There aren't master track");
-        }
-
-        if (!$track) {
-            return $this->notReadyToCut($multimediaObject, "There aren't html5 track");
-        }
-
-        if ($master->metadata()->isOnlyAudio()) {
-            return $this->notReadyToCut($multimediaObject, 'The master is only audio');
-        }
-
-        if ($track->metadata()->isOnlyAudio()) {
-            return $this->notReadyToCut($multimediaObject, 'Upload video track to cut');
-        }
-
-        if ($multimediaObject->getProperty('opencast') || $multimediaObject->isMultistream()) {
-            return $this->notReadyToCut($multimediaObject, "Can't cut multistream videos");
+        $error = $this->notReadyToCut($multimediaObject, $track);
+        if (null !== $error) {
+            return $this->render('@PumukitHardVideoEditor/Default/error.html.twig', [
+                'multimediaObject' => $multimediaObject,
+                'msg' => $error,
+            ]);
         }
 
         return $this->render('@PumukitHardVideoEditor/Default/index.html.twig', [
             'mm' => $multimediaObject,
             'track' => $track,
             'role' => $this->documentManager->getRepository(Role::class)->findOneBy(['cod' => $this->defaultSetRole]),
-            'langs' => $this->pumukitLocales,
-            'video_broadcastable' => (bool) $this->profileService->getProfile('video_broadcastable'),
+            'locales' => $this->pumukitLocales,
         ]);
     }
 
     #[Route('/{id}/cut', name: 'pumukit_videocut_action', methods: ['POST'])]
     public function cutAction(Request $request, MultimediaObject $originalmmobject): Response
     {
-        $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $originalmmobject);
+        $this->assertCanCut($originalmmobject);
 
         $parameters = $request->request;
         if (!$this->isCsrfTokenValid(self::CSRF_TOKEN, $parameters->getString('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token');
         }
 
-        $title = [];
-        $description = [];
-        foreach ($this->pumukitLocales as $locale) {
-            $title[$locale] = $parameters->getString('title_'.$locale);
-            $description[$locale] = $parameters->getString('descript_'.$locale);
-        }
-
         try {
             $cut = new Cut(
-                (float) $parameters->getString('in_ms'),
-                (float) $parameters->getString('out_ms'),
-                $title,
-                $description,
-                $parameters->getString('comm'),
-                $parameters->has('video_broadcastable'),
-                $this->picture($parameters->getString('hidden_src_img')),
+                (float) $parameters->getString('start'),
+                (float) $parameters->getString('end'),
+                $this->localized($parameters, 'title'),
+                $this->localized($parameters, 'description'),
+                $parameters->getString('comments'),
+                $parameters->getBoolean('master'),
+                $parameters->getBoolean('broadcastable'),
+                $this->picture($request->files->get('picture')),
             );
             $this->cutService->assertValid($originalmmobject, $cut);
             $multimediaObject = $this->cutService->cut($originalmmobject, $cut, $this->person($parameters), $this->getUser());
@@ -109,54 +89,88 @@ class DefaultController extends AbstractController implements NewAdminController
             throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
 
-        if ($request->isXmlHttpRequest()) {
-            return new Response('DONE');
+        $url = $this->generateUrl('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+        if ('json' === $request->getPreferredFormat()) {
+            return new JsonResponse(['id' => $multimediaObject->getId(), 'url' => $url], Response::HTTP_CREATED);
         }
 
-        return $this->redirectToRoute('pumukitnewadmin_mms_shortener', ['id' => $multimediaObject->getId()]);
+        return $this->redirect($url);
     }
 
-    private function picture(string $dataUrl): ?string
+    private function assertCanCut(MultimediaObject $multimediaObject): void
     {
-        if ('' === $dataUrl) {
+        if (!$this->isEnabled) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $multimediaObject);
+    }
+
+    private function notReadyToCut(MultimediaObject $multimediaObject, ?Track $track): ?string
+    {
+        $master = $multimediaObject->getTrackWithTag('master');
+
+        return match (true) {
+            !$master => "There aren't master track",
+            !$track => "There aren't html5 track",
+            $master->metadata()->isOnlyAudio() => 'The master is only audio',
+            $track->metadata()->isOnlyAudio() => 'Upload video track to cut',
+            $multimediaObject->getProperty('opencast') || $multimediaObject->isMultistream() => "Can't cut multistream videos",
+            default => null,
+        };
+    }
+
+    private function localized(InputBag $parameters, string $name): array
+    {
+        $values = $parameters->all($name);
+        $localized = [];
+        foreach ($this->pumukitLocales as $locale) {
+            $localized[$locale] = is_string($values[$locale] ?? null) ? $values[$locale] : '';
+        }
+
+        return $localized;
+    }
+
+    private function picture(mixed $file): ?string
+    {
+        if (null === $file) {
             return null;
         }
 
-        if (!preg_match('#^data:image/[a-z]+;base64,(.+)$#s', $dataUrl, $matches) || false === $picture = base64_decode($matches[1], true)) {
-            throw new \InvalidArgumentException('The thumbnail is not a valid image');
+        if (!$file instanceof UploadedFile || !$file->isValid()) {
+            throw new \InvalidArgumentException('The thumbnail could not be uploaded');
         }
 
-        return $picture;
+        return (string) file_get_contents($file->getPathname());
     }
 
     private function person(InputBag $parameters): ?Person
     {
-        if ('on' === $parameters->get('new_person') && '' !== trim($parameters->getString('person'))) {
+        if ($parameters->getBoolean('new_person')) {
+            $name = trim($parameters->getString('person_name'));
+            if ('' === $name) {
+                return null;
+            }
+
             $person = new Person();
-            $person->setName(trim($parameters->getString('person')));
-            foreach ($this->pumukitLocales as $locale) {
-                $person->setFirm($parameters->getString('firm_'.$locale), $locale);
-                $person->setPost($parameters->getString('post_'.$locale), $locale);
+            $person->setName($name);
+            foreach ($this->localized($parameters, 'post') as $locale => $post) {
+                $person->setPost($post, $locale);
+            }
+            foreach ($this->localized($parameters, 'firm') as $locale => $firm) {
+                $person->setFirm($firm, $locale);
             }
 
             return $this->personService->savePerson($person);
         }
 
-        $personId = $parameters->getString('person_id', '0');
-        if ('0' === $personId || '' === $personId) {
+        $personId = $parameters->getString('person');
+        if ('' === $personId) {
             return null;
         }
 
         $person = $this->documentManager->getRepository(Person::class)->find($personId);
 
         return $person instanceof Person ? $person : null;
-    }
-
-    private function notReadyToCut(MultimediaObject $multimediaObject, string $msg): Response
-    {
-        return $this->render('@PumukitHardVideoEditor/Default/error.html.twig', [
-            'multimediaObject' => $multimediaObject,
-            'msg' => $this->translator->trans($msg),
-        ]);
     }
 }

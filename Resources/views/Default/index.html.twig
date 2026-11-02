@@ -1,317 +1,175 @@
 {% extends '@PumukitNewAdmin/layout.html.twig' %}
 
 {% block body %}
-    <div>
-        <div id="messages"></div>
-        <form id="videotrim" autocomplete="off" method="POST" action="{{ path('pumukit_videocut_action', {'id': mm.id}) }}" onkeypress="stopEnterSubmitting(window.event)">
-            <input type="hidden" name="_token" value="{{ csrf_token(constant('Pumukit\\HardVideoEditorBundle\\Controller\\DefaultController::CSRF_TOKEN')) }}"/>
-            <div id="visualizadores"></div>
-            <div id="container">
-                <div id="metaContainer">
-                    <fieldset>
-                        <legend>
-                            {% trans %}Metadata{% endtrans %}
-                            <button id="clear_meta" class="btn btn-mini btn-info" type="button">
-                                <i class="icon-white icon-remove-sign"></i> {% trans %}Reset form{% endtrans %}
-                            </button>
-                        </legend>
-                        <div class="form-group">
-                            <label class="control-label required">{% trans %}Title{% endtrans %}:</label>
-                            {% for lang in langs %}
-                                <div class="input-group">
-                                    <input type="text" name="title_{{ lang }}" id="cut_title_{{ lang }}" class="form-control" value="{{ mm.title }}"/>
-                                    <span class="input-group-addon" style="color: #767676;">{{ lang }}</span>
+    <link rel="stylesheet" href="{{ asset('@pumukit/hard-video-editor/styles/cutter.css') }}">
+
+    <h3 class="cab_body_div">
+        <ul class="breadcrumb pmk-margin-bottom-5">
+            <li class="breadcrumb-item"><a href="{{ path('pumukitnewadmin_mms_shortener', {'id': mm.id}) }}">{{ mm.title }}</a></li>
+            <li class="breadcrumb-item active">{% trans %}Cut multimedia object{% endtrans %}</li>
+        </ul>
+    </h3>
+
+    <form class="hve" method="post" enctype="multipart/form-data" action="{{ path('pumukit_videocut_action', {'id': mm.id}) }}"
+          data-controller="hard-video-editor--cutter"
+          data-hard-video-editor--cutter-duration-value="{{ mm.duration }}"
+          data-hard-video-editor--cutter-messages-value="{{ {
+              range: 'The end of the cut must be after its start.'|trans,
+              outputs: 'Choose at least one track to generate.'|trans,
+              done: 'Cut done. The new video is being processed.'|trans,
+              error: 'The cut could not be done.'|trans,
+              capture: 'The frame could not be captured from this video.'|trans,
+          }|json_encode }}"
+          data-action="keydown->hard-video-editor--cutter#shortcut submit->hard-video-editor--cutter#submit">
+        <input type="hidden" name="_token" value="{{ csrf_token(constant('Pumukit\\HardVideoEditorBundle\\Controller\\DefaultController::CSRF_TOKEN')) }}">
+        <input type="hidden" name="start" data-hard-video-editor--cutter-target="start">
+        <input type="hidden" name="end" data-hard-video-editor--cutter-target="end">
+
+        <div class="row g-3">
+            <div class="col-xl-7">
+                <video class="hve-video" preload="metadata" playsinline crossorigin="anonymous" src="{{ direct_track_url(track, app.request) }}"
+                       data-hard-video-editor--cutter-target="video"
+                       data-action="loadedmetadata->hard-video-editor--cutter#loaded timeupdate->hard-video-editor--cutter#timeUpdate play->hard-video-editor--cutter#played pause->hard-video-editor--cutter#paused click->hard-video-editor--cutter#togglePlay"></video>
+
+                <div class="d-flex flex-wrap align-items-center gap-2 my-2">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-secondary" title="{% trans %}Back one second{% endtrans %}" aria-label="{% trans %}Back one second{% endtrans %}" data-action="hard-video-editor--cutter#back"><i class="fa-solid fa-backward" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-secondary" title="{% trans %}Previous frame{% endtrans %}" aria-label="{% trans %}Previous frame{% endtrans %}" data-action="hard-video-editor--cutter#previousFrame"><i class="fa-solid fa-backward-step" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-pumukit" title="{% trans %}Play / pause{% endtrans %}" aria-label="{% trans %}Play / pause{% endtrans %}" data-action="hard-video-editor--cutter#togglePlay"><i class="fa-solid fa-play" aria-hidden="true" data-hard-video-editor--cutter-target="playIcon"></i></button>
+                        <button type="button" class="btn btn-secondary" title="{% trans %}Next frame{% endtrans %}" aria-label="{% trans %}Next frame{% endtrans %}" data-action="hard-video-editor--cutter#nextFrame"><i class="fa-solid fa-forward-step" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-secondary" title="{% trans %}Forward one second{% endtrans %}" aria-label="{% trans %}Forward one second{% endtrans %}" data-action="hard-video-editor--cutter#forward"><i class="fa-solid fa-forward" aria-hidden="true"></i></button>
+                    </div>
+                    <span class="font-monospace hve-clock"><span data-hard-video-editor--cutter-target="currentTime">00:00.000</span> / <span data-hard-video-editor--cutter-target="totalTime">00:00.000</span></span>
+                    <button type="button" class="btn btn-outline-secondary ms-md-auto" data-action="hard-video-editor--cutter#preview"><i class="fa-solid fa-eye" aria-hidden="true"></i> {% trans %}Preview the cut{% endtrans %}</button>
+                </div>
+
+                <div class="hve-timeline" data-hard-video-editor--cutter-target="timeline" data-action="pointerdown->hard-video-editor--cutter#pointerDown">
+                    <div class="hve-ruler" data-hard-video-editor--cutter-target="ruler"></div>
+                    <div class="hve-lane">
+                        <div class="hve-outside hve-outside-start" data-hard-video-editor--cutter-target="outsideStart"></div>
+                        <div class="hve-outside" data-hard-video-editor--cutter-target="outsideEnd"></div>
+                        <div class="hve-handle" data-drag="start" data-hard-video-editor--cutter-target="startHandle" title="{% trans %}Start{% endtrans %}"></div>
+                        <div class="hve-handle" data-drag="end" data-hard-video-editor--cutter-target="endHandle" title="{% trans %}End{% endtrans %}"></div>
+                    </div>
+                    <div class="hve-playhead" data-hard-video-editor--cutter-target="playhead"></div>
+                </div>
+                <div class="small text-body-secondary mt-1">{% trans %}Click the timeline to move the playhead and drag the handles to adjust the cut. Space plays or pauses, the arrows move one second (five with Shift) and I and O set the start and the end at the playhead.{% endtrans %}</div>
+
+                <div class="row g-2 align-items-end mt-2">
+                    <div class="col-sm-4">
+                        <label class="form-label small" for="hve-start">{% trans %}Start{% endtrans %}</label>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control font-monospace" id="hve-start" data-hard-video-editor--cutter-target="startText" data-action="change->hard-video-editor--cutter#editRange">
+                            <button type="button" class="btn btn-outline-secondary" title="{% trans %}Use the playhead{% endtrans %}" aria-label="{% trans %}Use the playhead{% endtrans %}" data-action="hard-video-editor--cutter#startHere"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label small" for="hve-end">{% trans %}End{% endtrans %}</label>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control font-monospace" id="hve-end" data-hard-video-editor--cutter-target="endText" data-action="change->hard-video-editor--cutter#editRange">
+                            <button type="button" class="btn btn-outline-secondary" title="{% trans %}Use the playhead{% endtrans %}" aria-label="{% trans %}Use the playhead{% endtrans %}" data-action="hard-video-editor--cutter#endHere"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 small text-body-secondary">
+                        {% trans %}Duration of the cut{% endtrans %}: <span class="font-monospace" data-hard-video-editor--cutter-target="length">00:00.000</span>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header"><i class="fa-solid fa-image" aria-hidden="true"></i> {% trans %}Thumbnail{% endtrans %}</div>
+                    <div class="card-body d-flex flex-wrap gap-3 align-items-start">
+                        <img class="hve-picture d-none" alt="{% trans %}Thumbnail{% endtrans %}" data-hard-video-editor--cutter-target="picturePreview">
+                        <div class="d-flex flex-column gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-action="hard-video-editor--cutter#capture"><i class="fa-solid fa-camera" aria-hidden="true"></i> {% trans %}Use the current frame{% endtrans %}</button>
+                            <input class="form-control form-control-sm" type="file" name="picture" accept="image/jpeg,image/png,image/webp" aria-label="{% trans %}Upload a local file.{% endtrans %}" data-hard-video-editor--cutter-target="picture" data-action="change->hard-video-editor--cutter#pictureChanged">
+                            <button type="button" class="btn btn-sm btn-link px-0 text-start d-none" data-hard-video-editor--cutter-target="pictureRemove" data-action="hard-video-editor--cutter#removePicture">{% trans %}Delete thumbnail{% endtrans %}</button>
+                        </div>
+                        <canvas class="d-none" data-hard-video-editor--cutter-target="canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="card">
+                    <div class="card-header"><i class="fa-solid fa-pen" aria-hidden="true"></i> {% trans %}Metadata of the new video{% endtrans %}</div>
+                    <div class="card-body">
+                        <p class="small text-body-secondary">{% trans %}The new video is created in the same series, with the metadata, people and access of this one but without its publication channels.{% endtrans %}</p>
+
+                        <fieldset class="mb-3">
+                            <legend class="form-label fs-6">{% trans %}Title{% endtrans %}</legend>
+                            {% for locale in locales %}
+                                <div class="input-group input-group-sm mb-1">
+                                    <input class="form-control" name="title[{{ locale }}]" value="{{ mm.title(locale) }}" aria-label="{% trans %}Title{% endtrans %} ({{ locale }})">
+                                    <span class="input-group-text">{{ locale }}</span>
                                 </div>
                             {% endfor %}
-                        </div>
+                        </fieldset>
 
-                        <div class="form-group">
-                            <label class="control-label">{% trans %}Description{% endtrans %}:</label>
-                            {% for lang in langs %}
-                                <div class="input-group">
-                                    <textarea name="descript_{{ lang }}" id="cut_descript_{{ lang }}" class="form-control">{{ mm.description }}</textarea>
-                                    <span class="input-group-addon" style="color: #767676;">{{ lang }}</span>
+                        <fieldset class="mb-3">
+                            <legend class="form-label fs-6">{% trans %}Description{% endtrans %}</legend>
+                            {% for locale in locales %}
+                                <div class="input-group input-group-sm mb-1">
+                                    <textarea class="form-control" rows="2" name="description[{{ locale }}]" aria-label="{% trans %}Description{% endtrans %} ({{ locale }})">{{ mm.description(locale) }}</textarea>
+                                    <span class="input-group-text">{{ locale }}</span>
                                 </div>
                             {% endfor %}
+                        </fieldset>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="hve-comments">{% trans %}Comments{% endtrans %}</label>
+                            <textarea class="form-control form-control-sm" rows="2" id="hve-comments" name="comments"></textarea>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label">{% trans %}Comments{% endtrans %}:</label>
-                            <textarea name="comm" id="cut_comment" class="form-control" {# onload=pon_comm({{ mm.title }}); #}></textarea>
-                        </div>
-
-                        <label>{% trans %}Participant{% endtrans %}:</label>
-
-                        <div class="checkbox">
-                            <label style="padding-left:0px">
-                                <input type="checkbox" id="new_person" name="new_person" onclick="show_post();"> {% trans %}New person{% endtrans %}
-                            </label>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="text" name="cut_person" id="cut_person" class="form-control" placeholder="{% trans %}name to search for{% endtrans %}"/>
-                        </div>
-
-                        <input type="hidden" name="person_id" value="0" id="cut_person_id"/>
-                        <div id="cut_post" name="cut_post" style="display:none">
-
-
-                            <div class="form-group">
-                                <label class="control-label">{% trans %}Name{% endtrans %}:</label>
-                                <input type="text" name="person" id="cut_newperson" class="form-control"/>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">{% trans %}Post{% endtrans %}:</label>
-                                {% for lang in langs %}
-                                    <div class="input-group">
-                                        <input type="text" name="post_{{ lang }}" id="cut_post_{{ lang }}" class="form-control"/>
-                                        <span class="input-group-addon" style="color: #767676;">{{ lang }}</span>
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label">{% trans %}Firm{% endtrans %}:</label>
-                                {% for lang in langs %}
-                                    <div class="input-group">
-                                        <input type="text" name="firm_{{ lang }}" id="cut_firm_{{ lang }}" class="form-control"/>
-                                        <span class="input-group-addon" style="color: #767676;">{{ lang }}</span>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-
-                        {% if video_broadcastable %}
-                            <div class="checkbox">
-                                <label style="padding-left:0">
-                                    <input type="checkbox" id="video_broadcastable" name="video_broadcastable" checked> {% trans %}Generate broadcastable master{% endtrans %}
-                                </label>
-                            </div>
+                        {% if role %}
+                            <fieldset class="mb-3">
+                                <legend class="form-label fs-6">{{ role.name }}</legend>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="hve-new-person" name="new_person" value="1" data-hard-video-editor--cutter-target="newPerson" data-action="hard-video-editor--cutter#togglePerson">
+                                    <label class="form-check-label" for="hve-new-person">{% trans %}New person{% endtrans %}</label>
+                                </div>
+                                <div class="position-relative" data-hard-video-editor--cutter-target="existingPerson">
+                                    <input class="form-control form-control-sm" placeholder="{% trans %}name to search for{% endtrans %}" aria-label="{% trans %}name to search for{% endtrans %}"
+                                           data-hard-video-editor--cutter-target="personSearch"
+                                           data-autocomplete-url="{{ path('pumukitnewadmin_person_auto_complete', {'mmId': mm.id, 'roleId': role.id}) }}"
+                                           data-action="input->hard-video-editor--cutter#clearPerson">
+                                    <input type="hidden" name="person" data-hard-video-editor--cutter-target="person">
+                                </div>
+                                <div class="d-none" data-hard-video-editor--cutter-target="createPerson">
+                                    <input class="form-control form-control-sm mb-2" name="person_name" placeholder="{% trans %}Name{% endtrans %}" aria-label="{% trans %}Name{% endtrans %}">
+                                    {% for locale in locales %}
+                                        <div class="input-group input-group-sm mb-1">
+                                            <input class="form-control" name="post[{{ locale }}]" placeholder="{% trans %}Post{% endtrans %}" aria-label="{% trans %}Post{% endtrans %} ({{ locale }})">
+                                            <input class="form-control" name="firm[{{ locale }}]" placeholder="{% trans %}Firm{% endtrans %}" aria-label="{% trans %}Firm{% endtrans %} ({{ locale }})">
+                                            <span class="input-group-text">{{ locale }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </fieldset>
                         {% endif %}
 
-                    </fieldset>
-                </div>
-
-                <!-- pic taker -->
-                <div id="picContainer">
-                    <legend>{% trans %}Thumbnail{% endtrans %}
-                        <button id="clear_pic" class="btn btn-mini btn-info" type="button" style="display: none;">
-                            <i class="icon-white icon-remove-sign"></i>{% trans %}Delete thumbnail{% endtrans %}
-                        </button>
-                    </legend>
-                    <label for="imagen">{% trans %}Preview{% endtrans %}: </label>
-                    <div style="clear:left"></div>
-                    <canvas id="canvas-draw-frames" style="display:none;"></canvas>
-
-                    <div class="content" align="center">
-                        <img class="image" id="img" src="/images/none.jpg" style="width:100%"/>
-                        <input type="hidden" name="hidden_src_img" id="hidden_src_img" value="">
+                        <fieldset>
+                            <legend class="form-label fs-6">{% trans %}Tracks to generate{% endtrans %}</legend>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hve-master" name="master" value="1" data-hard-video-editor--cutter-target="output" data-action="hard-video-editor--cutter#render">
+                                <label class="form-check-label" for="hve-master">{% trans %}Master{% endtrans %}</label>
+                                <div class="form-text mt-0">{% trans %}High quality copy. Alone, the video can be played once it is published.{% endtrans %}</div>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hve-broadcastable" name="broadcastable" value="1" checked data-hard-video-editor--cutter-target="output" data-action="hard-video-editor--cutter#render">
+                                <label class="form-check-label" for="hve-broadcastable">{% trans %}Broadcastable{% endtrans %}</label>
+                                <div class="form-text mt-0">{% trans %}Ready to be played. Alone, it is also the master of the new video.{% endtrans %}</div>
+                            </div>
+                        </fieldset>
                     </div>
-
-                    <input type="file" id="file-upload-button" name="file" title="{% trans %}Upload a local file.{% endtrans %}" accept="image/*"/>
-
                 </div>
 
-                <!-- player -->
-                <div id="playerContainer">
-                    <video id="video"
-                           crossorigin="anonymous"
-                           src="{{ direct_track_url(track, app.request) }}"
-                            {% if(track.metadata().isOnlyAudio()) %} poster="{{ mm|first_url_pic(false, false) }}" style="background-color: white"{% endif %}
-                           onloadedmetadata="editor = new Videoeditor(this, document.getElementById('navbar-inner'), document.getElementById('visualizadores'), document.getElementById('marcadores'));">
-                    </video>
-                    <div id="currentTime"><span id="cTimeText"></span></div>
-                </div>
-
-            </div> <!--end  container -->
-
-            <!-- play controls -->
-            <div class="paellaEditorBottomBar">
-                <div class="navbar">
-                    <div class="slider-lefthandle-buttons"></div>
-                    <div id="navbar-inner" class="navbar-inner">
-                        <div class="slider-righthandle-buttons"></div>
-                    </div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                    <span class="text-danger small d-none" data-hard-video-editor--cutter-target="invalid"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> <span></span></span>
+                    <a class="btn btn-secondary ms-auto" href="{{ path('pumukitnewadmin_mms_shortener', {'id': mm.id}) }}">{% trans %}Cancel{% endtrans %}</a>
+                    <button type="button" class="btn btn-outline-primary" data-hard-video-editor--cutter-target="submitButton" data-action="hard-video-editor--cutter#cutAndContinue">{% trans %}Cut and continue{% endtrans %}</button>
+                    <button type="submit" class="btn btn-pumukit" data-hard-video-editor--cutter-target="submitButton">{% trans %}Cut{% endtrans %}</button>
                 </div>
             </div>
-
-            <!-- viewers  markers -->
-            <div class="vmarkers" style="overflow:hidden; padding-top: 10px;">
-                <div class="col-xs-6 form-group">
-                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0">{% trans %}Start{% endtrans %}
-                        :</label>
-                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0">
-                        <input id="timepicker_left" type="text" class="input-small timepicker">
-                    </div>
-                </div>
-                <div class="col-xs-6 form-group">
-                    <label class="col-xs-2 col-xs-offset-1" style="padding-right:0">{% trans %}End{% endtrans %}
-                        :</label>
-                    <div class="input-append bootstrap-timepicker col-xs-8" style="text-align:left; padding-left:0">
-                        <input id="timepicker_right" type="text" class="input-small timepicker">
-                    </div>
-                </div>
-                <div id="marcadores">
-                </div>
-            </div>
-
-            <!-- Submit buttons -->
-            <div id="trim_buttons" class="text-right">
-                <button class="btn btn-raised" id="cancel_button">
-                    Cancelar
-                </button>
-                <button class="btn btn-pumukit btn-raised" onclick="event.preventDefault(); if(eval_cut(editor.in_ms.value, editor.out_ms.value, editor.duration)) { cut_and_continue() };">
-                    {% trans %}Cut and continue{% endtrans %}
-                </button>
-                <button id="cut_button" class="btn btn-pumukit btn-raised" onclick="event.preventDefault(); if(eval_cut(editor.in_ms.value, editor.out_ms.value, editor.duration)) {$('#videotrim').submit()} else {return false}">
-                    {% trans %}Cut{% endtrans %}
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <script type="text/javascript">
-        function eval_cut(inicio, fin, duration) {
-            inicio = parseFloat(inicio);
-            fin = parseFloat(fin);
-            alerta = document.getElementById("messages");
-
-            if ((isNaN(inicio)) || (isNaN(fin))) {
-                return false;
-            }
-
-            if (inicio < 0) {
-                return false;
-            }
-
-            if ((fin < inicio) || (fin == inicio)) {
-                no_success('{% trans %}End time should be greater than the start time{% endtrans %}');
-                return false;
-            }
-
-            if (duration < fin) {
-                no_success('{% trans %}End time should be less than the video duration{% endtrans %}');
-                return false;
-            }
-
-            return true;
-        }
-
-        function cut_and_continue() {
-            var route = '{{ path('pumukit_videocut_action', {'id': mm.id}) }}'
-            var parameters = $(document.forms[0]).serialize();
-            $.post(route, parameters, function (data, textStatus, jqXHR) {
-                window.success('{% trans %}Cut done{% endtrans %}')
-            });
-
-        }
-
-        //new Ajax.Autocompleter('cut_person', 'name_auto_complete', '/editar.php/persons/autoComplete', {minChars: 2, indicator: 'indicator1'});
-
-        {% if role %}
-        $(cut_person).autocomplete({
-            source: "{{ path('pumukitnewadmin_person_auto_complete', {'mmId': mm.id, 'roleId': role.id})|raw }}",
-            minLength: 3,
-            select: function (event, ui) {
-                $(cut_person_id).val(ui.item.id)
-            }
-        }).autocomplete("instance")._renderItem = function (ul, item) {
-            return $("<li>")
-                .append("<a title=\"" + item.id + "\">" + item.label + "<br><span style='color:grey'>" + item.desc + "</span></a>")
-                .appendTo(ul);
-        };
-        {% endif %}
-
-        $(cut_person).on("input", function () {
-            $(cut_person_id).val(0);
-        });
-
-        function show_post() {
-            if ($(new_person).is(":checked")) {
-                $(cut_person).hide();
-                $(cut_newperson).show();
-                $(cut_post).show();
-            } else {
-                $(cut_post).hide();
-                $(cut_newperson).hide();
-                $(cut_person).show();
-            }
-        }
-    </script>
-    <script type="text/javascript">
-        var video = document.querySelector('#video');
-        var cancel = document.querySelector('#cancel_button');
-
-        video.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        }, false);
-
-        video.addEventListener('click', function (e) {
-            (editor.pop.paused()) ? editor.pop.play() : editor.pop.pause();
-            if (editor.pop.paused()) {
-                editor.buttons.button4.disabled = false;
-                editor.buttons.button5.disabled = true;
-            } else {
-                editor.buttons.button4.disabled = true;
-                editor.buttons.button5.disabled = false;
-            }
-        });
-
-        cancel.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (typeof editor != 'undefined') editor.pop.pause();
-            video.src = "";
-            if (history.length > 1) {
-                history.back();
-            }
-            else {
-                window.close();
-            }
-        });
-
-        function stopEnterSubmitting(e) {
-            if (e.keyCode == 13) {
-                var src = e.srcElement || e.target;
-                if (src.tagName.toLowerCase() != "textarea") {
-                    if (e.preventDefault) {
-                        e.preventDefault();
-                    } else {
-                        e.returnValue = false;
-                    }
-                }
-            }
-        }
-
-        $('.timepicker').timepicker({
-            template: false,
-            showInputs: false,
-            minuteStep: 1,
-            secondStep: 1,
-            milisecondStep: 250,
-            showSeconds: true,
-            showMeridian: false,
-            showMiliSeconds: true,
-            defaultTime: false
-        });
-    </script>
-
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ asset('bundles/pumukithardvideoeditor/js/prototype.js') }}" type="text/javascript"></script>
-    {{ parent() }}
-    <script src="{{ asset('bundles/pumukithardvideoeditor/js/popcorn-complete.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bundles/pumukithardvideoeditor/js/bootstrap-slider.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bundles/pumukithardvideoeditor/js/bootstrap-timepicker.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bundles/pumukithardvideoeditor/js/videoeditor.js') }}" type="text/javascript"></script>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/editor.css') }}"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/slider.css') }}"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/jquery-ui.css') }}"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('bundles/pumukithardvideoeditor/css/bootstrap-timepicker.css') }}"/>
+        </div>
+    </form>
 {% endblock %}

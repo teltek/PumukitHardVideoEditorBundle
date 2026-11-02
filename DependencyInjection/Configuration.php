@@ -12,13 +12,16 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('pumukit_hard_video_editor');
-        $rootNode = $treeBuilder->getRootNode();
 
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
+            ->booleanNode('enable')
+            ->defaultTrue()
+            ->info('If false, the editor is not shown in the menu and its pages return 404')
+            ->end()
             ->scalarNode('default_set_role')
             ->defaultValue('Participant')
-            ->info('Get the default role to add person on hard trimming')
+            ->info('Code of the role given to the person chosen in the editor')
             ->end()
             ->end()
         ;

@@ -39,3 +39,22 @@ pumukit_hard_video_editor:
             streamserver:
                 dir_out: "%pumukit.downloads_dir%"
                 url_out: "%pumukit.downloads_url%"
+        video_master_broadcastable_trimming:
+            generate_pic: false
+            nocheckduration: true
+            display: true
+            wizard: false
+            master: true
+            downloadable: true
+            target: PUCHWEBTV
+            tags: ''
+            extension: mp4
+            resolution_hor: 0
+            resolution_ver: 0
+            audio: false
+            image: false
+            document: false
+            bat: ffmpeg -y -ss {{ss}} -i "{{input}}" -t {{t}} -acodec libfdk_aac -b:a 128k -ac 2 -ar 44100 -vcodec libx264 -preset slow -crf 22 -movflags faststart -threads 0 "{{output}}"
+            streamserver:
+                dir_out: "%pumukit.downloads_dir%"
+                url_out: "%pumukit.downloads_url%"

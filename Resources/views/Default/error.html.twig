@@ -1,21 +1,16 @@
 {% extends '@PumukitNewAdmin/layout.html.twig' %}
 
 {% block body %}
+    <h3 class="cab_body_div">
+        <ul class="breadcrumb pmk-margin-bottom-5">
+            <li class="breadcrumb-item"><a href="{{ path('pumukitnewadmin_mms_shortener', {'id': multimediaObject.id}) }}">{{ multimediaObject.title }}</a></li>
+            <li class="breadcrumb-item active">{% trans %}Cut multimedia object{% endtrans %}</li>
+        </ul>
+    </h3>
 
-    <div class="well">
-        <div class="row">
-            <div class="col-md-12">
-                <p class="text-danger">{% trans %}Something was wrong{% endtrans %}: </p>
-                <p>{{ msg }}</p>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <p><a href="#" onclick="history.back();" class="btn btn-primary">{% trans %}Go back{% endtrans %}</a></p>
-            </div>
-        </div>
+    <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2" role="alert">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <span>{% trans %}This video cannot be cut{% endtrans %}: {{ msg|trans }}</span>
+        <a class="btn btn-sm btn-secondary ms-auto" href="{{ path('pumukitnewadmin_mms_shortener', {'id': multimediaObject.id}) }}">{% trans %}Go back{% endtrans %}</a>
     </div>
-
 {% endblock %}
-
