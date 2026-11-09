@@ -37,7 +37,6 @@ class DefaultController extends AbstractController implements NewAdminController
         private readonly CutService $cutService,
         private readonly array $pumukitLocales,
         private readonly string $defaultSetRole,
-        private readonly bool $isEnabled,
     ) {}
 
     #[Route('/{id}', name: 'pumukit_videocut', methods: ['GET'])]
@@ -99,10 +98,6 @@ class DefaultController extends AbstractController implements NewAdminController
 
     private function assertCanCut(MultimediaObject $multimediaObject): void
     {
-        if (!$this->isEnabled) {
-            throw $this->createNotFoundException();
-        }
-
         $this->denyAccessUnlessGranted(MultimediaObjectVoter::EDIT, $multimediaObject);
     }
 

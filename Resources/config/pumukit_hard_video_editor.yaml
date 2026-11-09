@@ -6,7 +6,6 @@ services:
     bind:
       $pumukitLocales: '%pumukit.locales%'
       $defaultSetRole: '%pumukit_hard_video_editor.default_set_role%'
-      $isEnabled: '%pumukit_hard_video_editor.enable%'
 
   Pumukit\HardVideoEditorBundle\Controller\:
     resource: '../../Controller/'

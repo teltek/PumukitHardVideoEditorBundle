@@ -26,7 +26,7 @@ pumukit_hard_video_editor:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `enable` | `true` | If false, the editor is not shown in the menu and its pages return 404 |
+| `enable` | `true` | If false, the editor pages return 404 and nothing else of the bundle is loaded: no menu option nor encoder profiles |
 | `default_set_role` | `Participant` | Code of the role given to the person chosen in the editor |
 
 ## Usage
@@ -57,8 +57,8 @@ followed by the origin of the cut. The thumbnail can be the current frame or an 
 | ✓ | | `video_master_trimming` | A high quality master; the broadcastable track is generated when the video is published |
 | ✓ | ✓ | `video_master_trimming` and `video_broadcastable_trimming` | Both tracks, as in a normal upload |
 
-The profiles are added to the encoder by the bundle unless the application already defines a profile with the same
-name, so they can be overridden in `config/packages/encoder.yaml`.
+The profiles are added to the encoder by the bundle, only when it is enabled, unless the application already defines a
+profile with the same name, so they can be overridden in `config/packages/encoder.yaml`.
 
 ## Upgrade from 4.x
 

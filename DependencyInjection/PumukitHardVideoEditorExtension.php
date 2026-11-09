@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pumukit\HardVideoEditorBundle\DependencyInjection;
 
 use Pumukit\CoreBundle\DependencyInjection\FrontendAssets;
-use Pumukit\HardVideoEditorBundle\Services\MenuService;
+use Pumukit\HardVideoEditorBundle\Routing\RouteLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -27,15 +27,20 @@ class PumukitHardVideoEditorExtension extends Extension implements PrependExtens
         $container->setParameter('pumukit_hard_video_editor.enable', $config['enable']);
         $container->setParameter('pumukit_hard_video_editor.default_set_role', $config['default_set_role']);
 
+        $container->register(RouteLoader::class)
+            ->setArguments(['$enabled' => '%pumukit_hard_video_editor.enable%', '$env' => '%kernel.environment%'])
+            ->addTag('routing.loader')
+        ;
+
+        if (!$config['enable']) {
+            return;
+        }
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('pumukit_hard_video_editor.yaml');
 
         $profiles = Yaml::parseFile(__DIR__.'/../Resources/config/encoders.yml')['pumukit_hard_video_editor']['profiles'];
         $container->setParameter('pumukit_hard_video_editor.profilelist', $profiles);
         $container->setParameter('pumukitencode.profilelist', $container->getParameter('pumukitencode.profilelist') + $profiles);
-
-        if (!$config['enable']) {
-            $container->removeDefinition(MenuService::class);
-        }
     }
 }

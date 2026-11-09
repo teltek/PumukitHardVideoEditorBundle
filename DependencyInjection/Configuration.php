@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->booleanNode('enable')
             ->defaultTrue()
-            ->info('If false, the editor is not shown in the menu and its pages return 404')
+            ->info('If false, the editor pages return 404 and nothing else of the bundle is loaded: no menu option nor encoder profiles')
             ->end()
             ->scalarNode('default_set_role')
             ->defaultValue('Participant')
