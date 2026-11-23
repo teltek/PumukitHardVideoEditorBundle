@@ -12,6 +12,7 @@ use Pumukit\SchemaBundle\Document\MediaType\Track;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Person;
 use Pumukit\SchemaBundle\Document\Role;
+use Pumukit\SchemaBundle\Document\User;
 use Pumukit\SchemaBundle\Services\MultimediaObjectVoter;
 use Pumukit\SchemaBundle\Services\PersonService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,7 +84,8 @@ class DefaultController extends AbstractController implements NewAdminController
                 $this->picture($request->files->get('picture')),
             );
             $this->cutService->assertValid($originalmmobject, $cut);
-            $multimediaObject = $this->cutService->cut($originalmmobject, $cut, $this->person($parameters), $this->getUser());
+            $user = $this->getUser();
+            $multimediaObject = $this->cutService->cut($originalmmobject, $cut, $this->person($parameters), $user instanceof User ? $user : null);
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage(), $exception);
         }
@@ -156,7 +158,9 @@ class DefaultController extends AbstractController implements NewAdminController
                 $person->setFirm($firm, $locale);
             }
 
-            return $this->personService->savePerson($person);
+            $this->personService->savePerson($person);
+
+            return $person;
         }
 
         $personId = $parameters->getString('person');
